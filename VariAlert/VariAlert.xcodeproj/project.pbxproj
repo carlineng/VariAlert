@@ -1,0 +1,800 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3668AF4B2D55C44B0019F1F7 /* VariAlertTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3668AF4A2D55C44B0019F1F7 /* VariAlertTests.swift */; };
+		3668AF532D55C4760019F1F7 /* MockBluetooth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3668AF512D55C4730019F1F7 /* MockBluetooth.swift */; };
+		3668AF552D55C4A10019F1F7 /* BluetoothManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3668AF542D55C4A10019F1F7 /* BluetoothManagerTests.swift */; };
+		367342A92D5B179B00E4CF04 /* HapticTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367342A82D5B179B00E4CF04 /* HapticTestView.swift */; };
+		36FE29DA2D502B1800A5E88E /* VariAlertApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE29D92D502B1800A5E88E /* VariAlertApp.swift */; };
+		36FE29DC2D502B1800A5E88E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE29DB2D502B1800A5E88E /* ContentView.swift */; };
+		36FE29DE2D502B1900A5E88E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 36FE29DD2D502B1900A5E88E /* Assets.xcassets */; };
+		36FE29E12D502B1900A5E88E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 36FE29E02D502B1900A5E88E /* Preview Assets.xcassets */; };
+		36FE29EE2D502BA400A5E88E /* VariAlertWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE29ED2D502BA400A5E88E /* VariAlertWatchApp.swift */; };
+		36FE29F22D502BA600A5E88E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 36FE29F12D502BA600A5E88E /* Assets.xcassets */; };
+		36FE29F52D502BA600A5E88E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 36FE29F42D502BA600A5E88E /* Preview Assets.xcassets */; };
+		36FE29F82D502BA600A5E88E /* VariAlertWatch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 36FE29EB2D502BA400A5E88E /* VariAlertWatch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		36FE2A072D50306F00A5E88E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE2A062D50306F00A5E88E /* AppDelegate.swift */; };
+		36FE2A0B2D5030DB00A5E88E /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE2A0A2D5030DB00A5E88E /* WatchConnectivityManager.swift */; };
+		36FE2A0D2D5030EA00A5E88E /* RadarDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE2A0C2D5030EA00A5E88E /* RadarDevice.swift */; };
+		36FE2A0F2D5030FF00A5E88E /* DisconnectedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE2A0E2D5030FF00A5E88E /* DisconnectedViewModel.swift */; };
+		36FE2A112D50311B00A5E88E /* ConnectedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE2A102D50311B00A5E88E /* ConnectedViewModel.swift */; };
+		36FE2A132D50313B00A5E88E /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE2A122D50313B00A5E88E /* SettingsViewModel.swift */; };
+		36FE2A152D50316600A5E88E /* DisconnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE2A142D50316600A5E88E /* DisconnectedView.swift */; };
+		36FE2A172D50317D00A5E88E /* ConnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE2A162D50317D00A5E88E /* ConnectedView.swift */; };
+		36FE2A192D50318C00A5E88E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE2A182D50318C00A5E88E /* SettingsView.swift */; };
+		36FE2A1B2D5031C700A5E88E /* product_spec.md in Resources */ = {isa = PBXBuildFile; fileRef = 36FE2A1A2D5031C700A5E88E /* product_spec.md */; };
+		36FE2A1D2D50336E00A5E88E /* AppStateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE2A1C2D50336E00A5E88E /* AppStateViewModel.swift */; };
+		36FE2A1F2D5033BF00A5E88E /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE2A1E2D5033BF00A5E88E /* BluetoothManager.swift */; };
+		36FE2A212D50385200A5E88E /* Threat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE2A202D50385200A5E88E /* Threat.swift */; };
+		36FE2A232D505DEB00A5E88E /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE2A222D505DEB00A5E88E /* WatchConnectivityManager.swift */; };
+		36FE2A292D51105B00A5E88E /* project_overview.txt in Resources */ = {isa = PBXBuildFile; fileRef = 36FE2A282D51105B00A5E88E /* project_overview.txt */; };
+		36FE2A2B2D51AF9200A5E88E /* WatchAppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE2A2A2D51AF9200A5E88E /* WatchAppState.swift */; };
+		36FE2A2D2D51AFA400A5E88E /* WorkoutSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE2A2C2D51AFA400A5E88E /* WorkoutSessionManager.swift */; };
+		36FE2A2F2D51B0BE00A5E88E /* IdleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE2A2E2D51B0BE00A5E88E /* IdleView.swift */; };
+		36FE2A312D51B0E300A5E88E /* WorkoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE2A302D51B0E300A5E88E /* WorkoutView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3668AF4C2D55C44B0019F1F7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 36FE29CE2D502B1800A5E88E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 36FE29D52D502B1800A5E88E;
+			remoteInfo = VariAlert;
+		};
+		36FE29F62D502BA600A5E88E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 36FE29CE2D502B1800A5E88E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 36FE29EA2D502BA400A5E88E;
+			remoteInfo = "VariAlertWatch Watch App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		36FE29FC2D502BA600A5E88E /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				36FE29F82D502BA600A5E88E /* VariAlertWatch Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		3668AF482D55C44B0019F1F7 /* VariAlertTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VariAlertTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3668AF4A2D55C44B0019F1F7 /* VariAlertTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariAlertTests.swift; sourceTree = "<group>"; };
+		3668AF512D55C4730019F1F7 /* MockBluetooth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBluetooth.swift; sourceTree = "<group>"; };
+		3668AF542D55C4A10019F1F7 /* BluetoothManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothManagerTests.swift; sourceTree = "<group>"; };
+		367342A82D5B179B00E4CF04 /* HapticTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticTestView.swift; sourceTree = "<group>"; };
+		36FE29D62D502B1800A5E88E /* VariAlert.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VariAlert.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		36FE29D92D502B1800A5E88E /* VariAlertApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariAlertApp.swift; sourceTree = "<group>"; };
+		36FE29DB2D502B1800A5E88E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		36FE29DD2D502B1900A5E88E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		36FE29E02D502B1900A5E88E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		36FE29EB2D502BA400A5E88E /* VariAlertWatch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VariAlertWatch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		36FE29ED2D502BA400A5E88E /* VariAlertWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariAlertWatchApp.swift; sourceTree = "<group>"; };
+		36FE29F12D502BA600A5E88E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		36FE29F42D502BA600A5E88E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		36FE29FD2D502BD300A5E88E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		36FE29FE2D502C3500A5E88E /* VariAlert.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VariAlert.entitlements; sourceTree = "<group>"; };
+		36FE2A062D50306F00A5E88E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		36FE2A0A2D5030DB00A5E88E /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
+		36FE2A0C2D5030EA00A5E88E /* RadarDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadarDevice.swift; sourceTree = "<group>"; };
+		36FE2A0E2D5030FF00A5E88E /* DisconnectedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisconnectedViewModel.swift; sourceTree = "<group>"; };
+		36FE2A102D50311B00A5E88E /* ConnectedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedViewModel.swift; sourceTree = "<group>"; };
+		36FE2A122D50313B00A5E88E /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		36FE2A142D50316600A5E88E /* DisconnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisconnectedView.swift; sourceTree = "<group>"; };
+		36FE2A162D50317D00A5E88E /* ConnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedView.swift; sourceTree = "<group>"; };
+		36FE2A182D50318C00A5E88E /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		36FE2A1A2D5031C700A5E88E /* product_spec.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = product_spec.md; sourceTree = "<group>"; };
+		36FE2A1C2D50336E00A5E88E /* AppStateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateViewModel.swift; sourceTree = "<group>"; };
+		36FE2A1E2D5033BF00A5E88E /* BluetoothManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
+		36FE2A202D50385200A5E88E /* Threat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Threat.swift; sourceTree = "<group>"; };
+		36FE2A222D505DEB00A5E88E /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
+		36FE2A282D51105B00A5E88E /* project_overview.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = project_overview.txt; path = ../project_overview.txt; sourceTree = "<group>"; };
+		36FE2A2A2D51AF9200A5E88E /* WatchAppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAppState.swift; sourceTree = "<group>"; };
+		36FE2A2C2D51AFA400A5E88E /* WorkoutSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSessionManager.swift; sourceTree = "<group>"; };
+		36FE2A2E2D51B0BE00A5E88E /* IdleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdleView.swift; sourceTree = "<group>"; };
+		36FE2A302D51B0E300A5E88E /* WorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutView.swift; sourceTree = "<group>"; };
+		36FE2A322D51B36100A5E88E /* VariAlertWatch Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "VariAlertWatch Watch App.entitlements"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3668AF452D55C44B0019F1F7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		36FE29D32D502B1800A5E88E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		36FE29E82D502BA400A5E88E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3668AF492D55C44B0019F1F7 /* VariAlertTests */ = {
+			isa = PBXGroup;
+			children = (
+				3668AF4A2D55C44B0019F1F7 /* VariAlertTests.swift */,
+				3668AF512D55C4730019F1F7 /* MockBluetooth.swift */,
+				3668AF542D55C4A10019F1F7 /* BluetoothManagerTests.swift */,
+			);
+			path = VariAlertTests;
+			sourceTree = "<group>";
+		};
+		36FE29CD2D502B1800A5E88E = {
+			isa = PBXGroup;
+			children = (
+				36FE2A1A2D5031C700A5E88E /* product_spec.md */,
+				36FE2A282D51105B00A5E88E /* project_overview.txt */,
+				36FE29D82D502B1800A5E88E /* VariAlert */,
+				36FE29EC2D502BA400A5E88E /* VariAlertWatch Watch App */,
+				3668AF492D55C44B0019F1F7 /* VariAlertTests */,
+				36FE29D72D502B1800A5E88E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		36FE29D72D502B1800A5E88E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				36FE29D62D502B1800A5E88E /* VariAlert.app */,
+				36FE29EB2D502BA400A5E88E /* VariAlertWatch Watch App.app */,
+				3668AF482D55C44B0019F1F7 /* VariAlertTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		36FE29D82D502B1800A5E88E /* VariAlert */ = {
+			isa = PBXGroup;
+			children = (
+				36FE29FF2D502D0300A5E88E /* App */,
+				36FE2A002D502D1900A5E88E /* Managers */,
+				36FE2A012D502D2100A5E88E /* Models */,
+				36FE2A032D502D3200A5E88E /* ViewModels */,
+				36FE2A042D502D3900A5E88E /* Views */,
+				36FE2A052D502D3E00A5E88E /* Resources */,
+				36FE29FD2D502BD300A5E88E /* Info.plist */,
+				36FE29FE2D502C3500A5E88E /* VariAlert.entitlements */,
+				36FE29DD2D502B1900A5E88E /* Assets.xcassets */,
+				36FE29DF2D502B1900A5E88E /* Preview Content */,
+			);
+			path = VariAlert;
+			sourceTree = "<group>";
+		};
+		36FE29DF2D502B1900A5E88E /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				36FE29E02D502B1900A5E88E /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		36FE29EC2D502BA400A5E88E /* VariAlertWatch Watch App */ = {
+			isa = PBXGroup;
+			children = (
+				36FE2A322D51B36100A5E88E /* VariAlertWatch Watch App.entitlements */,
+				36FE2A2A2D51AF9200A5E88E /* WatchAppState.swift */,
+				36FE2A2C2D51AFA400A5E88E /* WorkoutSessionManager.swift */,
+				36FE29ED2D502BA400A5E88E /* VariAlertWatchApp.swift */,
+				36FE2A222D505DEB00A5E88E /* WatchConnectivityManager.swift */,
+				367342A82D5B179B00E4CF04 /* HapticTestView.swift */,
+				36FE29F12D502BA600A5E88E /* Assets.xcassets */,
+				36FE29F32D502BA600A5E88E /* Preview Content */,
+				36FE2A2E2D51B0BE00A5E88E /* IdleView.swift */,
+				36FE2A302D51B0E300A5E88E /* WorkoutView.swift */,
+			);
+			path = "VariAlertWatch Watch App";
+			sourceTree = "<group>";
+		};
+		36FE29F32D502BA600A5E88E /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				36FE29F42D502BA600A5E88E /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		36FE29FF2D502D0300A5E88E /* App */ = {
+			isa = PBXGroup;
+			children = (
+				36FE29D92D502B1800A5E88E /* VariAlertApp.swift */,
+				36FE2A062D50306F00A5E88E /* AppDelegate.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		36FE2A002D502D1900A5E88E /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				36FE2A1E2D5033BF00A5E88E /* BluetoothManager.swift */,
+				36FE2A0A2D5030DB00A5E88E /* WatchConnectivityManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		36FE2A012D502D2100A5E88E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				36FE2A0C2D5030EA00A5E88E /* RadarDevice.swift */,
+				36FE2A202D50385200A5E88E /* Threat.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		36FE2A032D502D3200A5E88E /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				36FE2A0E2D5030FF00A5E88E /* DisconnectedViewModel.swift */,
+				36FE2A102D50311B00A5E88E /* ConnectedViewModel.swift */,
+				36FE2A122D50313B00A5E88E /* SettingsViewModel.swift */,
+				36FE2A1C2D50336E00A5E88E /* AppStateViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		36FE2A042D502D3900A5E88E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				36FE29DB2D502B1800A5E88E /* ContentView.swift */,
+				36FE2A142D50316600A5E88E /* DisconnectedView.swift */,
+				36FE2A162D50317D00A5E88E /* ConnectedView.swift */,
+				36FE2A182D50318C00A5E88E /* SettingsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		36FE2A052D502D3E00A5E88E /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3668AF472D55C44B0019F1F7 /* VariAlertTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3668AF4E2D55C44B0019F1F7 /* Build configuration list for PBXNativeTarget "VariAlertTests" */;
+			buildPhases = (
+				3668AF442D55C44B0019F1F7 /* Sources */,
+				3668AF452D55C44B0019F1F7 /* Frameworks */,
+				3668AF462D55C44B0019F1F7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3668AF4D2D55C44B0019F1F7 /* PBXTargetDependency */,
+			);
+			name = VariAlertTests;
+			productName = VariAlertTests;
+			productReference = 3668AF482D55C44B0019F1F7 /* VariAlertTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		36FE29D52D502B1800A5E88E /* VariAlert */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 36FE29E42D502B1900A5E88E /* Build configuration list for PBXNativeTarget "VariAlert" */;
+			buildPhases = (
+				36FE29D22D502B1800A5E88E /* Sources */,
+				36FE29D32D502B1800A5E88E /* Frameworks */,
+				36FE29D42D502B1800A5E88E /* Resources */,
+				36FE29FC2D502BA600A5E88E /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				36FE29F72D502BA600A5E88E /* PBXTargetDependency */,
+			);
+			name = VariAlert;
+			productName = VariAlert;
+			productReference = 36FE29D62D502B1800A5E88E /* VariAlert.app */;
+			productType = "com.apple.product-type.application";
+		};
+		36FE29EA2D502BA400A5E88E /* VariAlertWatch Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 36FE29F92D502BA600A5E88E /* Build configuration list for PBXNativeTarget "VariAlertWatch Watch App" */;
+			buildPhases = (
+				36FE29E72D502BA400A5E88E /* Sources */,
+				36FE29E82D502BA400A5E88E /* Frameworks */,
+				36FE29E92D502BA400A5E88E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "VariAlertWatch Watch App";
+			productName = "VariAlertWatch Watch App";
+			productReference = 36FE29EB2D502BA400A5E88E /* VariAlertWatch Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		36FE29CE2D502B1800A5E88E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					3668AF472D55C44B0019F1F7 = {
+						CreatedOnToolsVersion = 15.4;
+						TestTargetID = 36FE29D52D502B1800A5E88E;
+					};
+					36FE29D52D502B1800A5E88E = {
+						CreatedOnToolsVersion = 15.4;
+					};
+					36FE29EA2D502BA400A5E88E = {
+						CreatedOnToolsVersion = 15.4;
+					};
+				};
+			};
+			buildConfigurationList = 36FE29D12D502B1800A5E88E /* Build configuration list for PBXProject "VariAlert" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 36FE29CD2D502B1800A5E88E;
+			productRefGroup = 36FE29D72D502B1800A5E88E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				36FE29D52D502B1800A5E88E /* VariAlert */,
+				36FE29EA2D502BA400A5E88E /* VariAlertWatch Watch App */,
+				3668AF472D55C44B0019F1F7 /* VariAlertTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3668AF462D55C44B0019F1F7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		36FE29D42D502B1800A5E88E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36FE29E12D502B1900A5E88E /* Preview Assets.xcassets in Resources */,
+				36FE29DE2D502B1900A5E88E /* Assets.xcassets in Resources */,
+				36FE2A1B2D5031C700A5E88E /* product_spec.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		36FE29E92D502BA400A5E88E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36FE2A292D51105B00A5E88E /* project_overview.txt in Resources */,
+				36FE29F52D502BA600A5E88E /* Preview Assets.xcassets in Resources */,
+				36FE29F22D502BA600A5E88E /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3668AF442D55C44B0019F1F7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3668AF532D55C4760019F1F7 /* MockBluetooth.swift in Sources */,
+				3668AF4B2D55C44B0019F1F7 /* VariAlertTests.swift in Sources */,
+				3668AF552D55C4A10019F1F7 /* BluetoothManagerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		36FE29D22D502B1800A5E88E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36FE2A0D2D5030EA00A5E88E /* RadarDevice.swift in Sources */,
+				36FE2A212D50385200A5E88E /* Threat.swift in Sources */,
+				36FE2A072D50306F00A5E88E /* AppDelegate.swift in Sources */,
+				36FE2A172D50317D00A5E88E /* ConnectedView.swift in Sources */,
+				36FE2A112D50311B00A5E88E /* ConnectedViewModel.swift in Sources */,
+				36FE2A0F2D5030FF00A5E88E /* DisconnectedViewModel.swift in Sources */,
+				36FE29DC2D502B1800A5E88E /* ContentView.swift in Sources */,
+				36FE29DA2D502B1800A5E88E /* VariAlertApp.swift in Sources */,
+				36FE2A0B2D5030DB00A5E88E /* WatchConnectivityManager.swift in Sources */,
+				36FE2A192D50318C00A5E88E /* SettingsView.swift in Sources */,
+				36FE2A1F2D5033BF00A5E88E /* BluetoothManager.swift in Sources */,
+				36FE2A132D50313B00A5E88E /* SettingsViewModel.swift in Sources */,
+				36FE2A1D2D50336E00A5E88E /* AppStateViewModel.swift in Sources */,
+				36FE2A152D50316600A5E88E /* DisconnectedView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		36FE29E72D502BA400A5E88E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36FE2A2B2D51AF9200A5E88E /* WatchAppState.swift in Sources */,
+				36FE2A312D51B0E300A5E88E /* WorkoutView.swift in Sources */,
+				367342A92D5B179B00E4CF04 /* HapticTestView.swift in Sources */,
+				36FE2A232D505DEB00A5E88E /* WatchConnectivityManager.swift in Sources */,
+				36FE2A2F2D51B0BE00A5E88E /* IdleView.swift in Sources */,
+				36FE2A2D2D51AFA400A5E88E /* WorkoutSessionManager.swift in Sources */,
+				36FE29EE2D502BA400A5E88E /* VariAlertWatchApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3668AF4D2D55C44B0019F1F7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 36FE29D52D502B1800A5E88E /* VariAlert */;
+			targetProxy = 3668AF4C2D55C44B0019F1F7 /* PBXContainerItemProxy */;
+		};
+		36FE29F72D502BA600A5E88E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 36FE29EA2D502BA400A5E88E /* VariAlertWatch Watch App */;
+			targetProxy = 36FE29F62D502BA600A5E88E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		3668AF4F2D55C44B0019F1F7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.carlineng.VariAlertTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VariAlert.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/VariAlert";
+			};
+			name = Debug;
+		};
+		3668AF502D55C44B0019F1F7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.carlineng.VariAlertTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VariAlert.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/VariAlert";
+			};
+			name = Release;
+		};
+		36FE29E22D502B1900A5E88E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "VariAlert needs to access HealthKit to begin a Workout Session";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "VariAlert needs to access HealthKit to begin a workout session.";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		36FE29E32D502B1900A5E88E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "VariAlert needs to access HealthKit to begin a Workout Session";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "VariAlert needs to access HealthKit to begin a workout session.";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		36FE29E52D502B1900A5E88E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = VariAlert/VariAlert.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"VariAlert/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = VariAlert/Info.plist;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "VariAlert needs Bluetooth access to communicate with your cycling radar device.";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "VariAlert needs Bluetooth access to communicate with your cycling radar device.";
+				INFOPLIST_KEY_NSBluetoothWhileInUseUsageDescription = "VariAlert needs Bluetooth access to communicate with your cycling radar device.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.carlineng.VariAlert;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		36FE29E62D502B1900A5E88E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = VariAlert/VariAlert.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"VariAlert/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = VariAlert/Info.plist;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "VariAlert needs Bluetooth access to communicate with your cycling radar device.";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "VariAlert needs Bluetooth access to communicate with your cycling radar device.";
+				INFOPLIST_KEY_NSBluetoothWhileInUseUsageDescription = "VariAlert needs Bluetooth access to communicate with your cycling radar device.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.carlineng.VariAlert;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		36FE29FA2D502BA600A5E88E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "VariAlertWatch Watch App/VariAlertWatch Watch App.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"VariAlertWatch Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = VariAlertWatch;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.carlineng.VariAlert;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.carlineng.VariAlert.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.5;
+			};
+			name = Debug;
+		};
+		36FE29FB2D502BA600A5E88E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "VariAlertWatch Watch App/VariAlertWatch Watch App.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"VariAlertWatch Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = VariAlertWatch;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.carlineng.VariAlert;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.carlineng.VariAlert.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.5;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3668AF4E2D55C44B0019F1F7 /* Build configuration list for PBXNativeTarget "VariAlertTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3668AF4F2D55C44B0019F1F7 /* Debug */,
+				3668AF502D55C44B0019F1F7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		36FE29D12D502B1800A5E88E /* Build configuration list for PBXProject "VariAlert" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				36FE29E22D502B1900A5E88E /* Debug */,
+				36FE29E32D502B1900A5E88E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		36FE29E42D502B1900A5E88E /* Build configuration list for PBXNativeTarget "VariAlert" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				36FE29E52D502B1900A5E88E /* Debug */,
+				36FE29E62D502B1900A5E88E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		36FE29F92D502BA600A5E88E /* Build configuration list for PBXNativeTarget "VariAlertWatch Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				36FE29FA2D502BA600A5E88E /* Debug */,
+				36FE29FB2D502BA600A5E88E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 36FE29CE2D502B1800A5E88E /* Project object */;
+}

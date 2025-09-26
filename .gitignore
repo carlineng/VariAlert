@@ -1,0 +1,47 @@
+# Xcode specific files
+.DS_Store
+UserInterfaceState.xcuserstate
+xcuserdata/
+*.xcworkspace/
+*.xcuserdatad/
+
+# Build artifacts
+build/
+DerivedData/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+Packages/
+Package.pins
+.swiftpm/
+.build/
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+fastlane/test_output/
+
+# Archives
+*.xcarchive
+
+# Environment variables & secrets
+*.xcconfig
+*.env
+
+# Playgrounds
+timeline.xctimeline
+playground.xcworkspace/
+
+# Generated scheme files
+*.xcscheme
+

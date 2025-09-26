@@ -1,0 +1,1661 @@
+Project Structure
+=================
+.
+├── LICENSE
+├── VariAlert
+│   ├── VariAlert
+│   │   ├── App
+│   │   │   ├── AppDelegate.swift
+│   │   │   └── VariAlertApp.swift
+│   │   ├── Assets.xcassets
+│   │   │   ├── AccentColor.colorset
+│   │   │   │   └── Contents.json
+│   │   │   ├── AppIcon.appiconset
+│   │   │   │   ├── Contents.json
+│   │   │   │   └── app icon cropped png.png
+│   │   │   └── Contents.json
+│   │   ├── Info.plist
+│   │   ├── Managers
+│   │   │   ├── BluetoothManager.swift
+│   │   │   └── WatchConnectivityManager.swift
+│   │   ├── Models
+│   │   │   ├── RadarDevice.swift
+│   │   │   └── Threat.swift
+│   │   ├── Preview Content
+│   │   │   └── Preview Assets.xcassets
+│   │   │       └── Contents.json
+│   │   ├── Resources
+│   │   ├── VariAlert.entitlements
+│   │   ├── ViewModels
+│   │   │   ├── AppStateViewModel.swift
+│   │   │   ├── ConnectedViewModel.swift
+│   │   │   ├── DisconnectedViewModel.swift
+│   │   │   └── SettingsViewModel.swift
+│   │   └── Views
+│   │       ├── ConnectedView.swift
+│   │       ├── ContentView.swift
+│   │       ├── DisconnectedView.swift
+│   │       └── SettingsView.swift
+│   ├── VariAlert.xcodeproj
+│   │   ├── project.pbxproj
+│   │   ├── project.xcworkspace
+│   │   │   ├── contents.xcworkspacedata
+│   │   │   ├── xcshareddata
+│   │   │   │   ├── IDEWorkspaceChecks.plist
+│   │   │   │   └── swiftpm
+│   │   │   │       └── configuration
+│   │   │   └── xcuserdata
+│   │   │       └── carlineng.xcuserdatad
+│   │   │           └── UserInterfaceState.xcuserstate
+│   │   └── xcuserdata
+│   │       └── carlineng.xcuserdatad
+│   │           └── xcschemes
+│   │               └── xcschememanagement.plist
+│   ├── VariAlertTests
+│   │   ├── BluetoothManagerTests.swift
+│   │   ├── MockBluetooth.swift
+│   │   └── VariAlertTests.swift
+│   ├── VariAlertWatch Watch App
+│   │   ├── Assets.xcassets
+│   │   │   ├── AccentColor.colorset
+│   │   │   │   └── Contents.json
+│   │   │   ├── AppIcon.appiconset
+│   │   │   │   ├── Contents.json
+│   │   │   │   └── app icon cropped png.png
+│   │   │   └── Contents.json
+│   │   ├── HapticTestView.swift
+│   │   ├── IdleView.swift
+│   │   ├── Preview Content
+│   │   │   └── Preview Assets.xcassets
+│   │   │       └── Contents.json
+│   │   ├── VariAlertWatch Watch App.entitlements
+│   │   ├── VariAlertWatchApp.swift
+│   │   ├── WatchAppState.swift
+│   │   ├── WatchConnectivityManager.swift
+│   │   ├── WorkoutSessionManager.swift
+│   │   └── WorkoutView.swift
+│   └── product_spec.md
+├── project_overview.sh
+└── project_overview.txt
+
+31 directories, 46 files
+
+Project Contents
+================
+
+----- ./VariAlert/VariAlert/ViewModels/DisconnectedViewModel.swift -----
+----------------------------------------
+//
+//  DisconnectedViewModel.swift
+//  VariAlert
+//
+//  Created by Carlin Eng on 2/2/25.
+//
+
+import SwiftUI
+import Combine
+
+class DisconnectedViewModel: ObservableObject {
+    // MARK: - Published Properties
+    @Published var detectedRadars: [RadarDevice] = []
+    @Published var isSearching: Bool = false
+    @Published var errorMessage: String? = nil
+    @Published var isBluetoothEnabled = true
+    
+    // MARK: - Private Properties
+    private var bluetoothManager: BluetoothManager
+    private var cancellables = Set<AnyCancellable>()
+    
+    // MARK: - Init
+    init(appState: AppStateViewModel) {
+        self.bluetoothManager = appState.bluetoothManager
+        
+        bluetoothManager = appState.bluetoothManager
+        bluetoothManager.$discoveredRadars.assign(to: &$detectedRadars)
+        bluetoothManager.$isScanning.assign(to: &$isSearching)
+        bluetoothManager.$isBluetoothEnabled.assign(to: &$isBluetoothEnabled) // Sync Bluetooth state
+    }
+    
+    // MARK: - Methods
+    
+    /// Start scanning for radars
+    func startSearch() {
+        // Begin scanning for radars.
+        isSearching = true
+        bluetoothManager.startScanning()
+        
+        // After scanning, update detectedRadars, set isSearching = false.
+    }
+    
+    func stopSearch() {
+        // Stop scanning.
+        isSearching = false
+        bluetoothManager.stopScanning()
+    }
+
+    func connectToRadar(_ radar: RadarDevice) {
+        // Initiate connection logic via the relevant service.
+        // If success, call appState.didConnect(to:)
+        // If fail, set errorMessage with reason.
+        bluetoothManager.connect(to: radar)
+    }
+}
+----------------------------------------
+
+
+----- ./VariAlert/VariAlert/ViewModels/SettingsViewModel.swift -----
+----------------------------------------
+//
+//  SettingsViewModel.swift
+//  VariAlert
+//
+//  Created by Carlin Eng on 2/2/25.
+//
+
+import SwiftUI
+import Combine
+
+class SettingsViewModel: ObservableObject {
+    // MARK: - Published Properties
+    @Published var currentDevice: RadarDevice?
+    @Published var quietModeEnabled: Bool = false
+    @Published var appVersion: String = "1.0.0"
+    
+    // MARK: - Private Properties
+    private var bluetoothManager: BluetoothManager
+    private var cancellables = Set<AnyCancellable>()
+    
+    // MARK: - Init
+    init(bluetoothManager: BluetoothManager) {
+        self.bluetoothManager = bluetoothManager
+        
+        // Observe the connected device from bluetoothManager
+//        bluetoothManager.$connectedPeripheral
+//            .sink { [weak self] device in
+//                self?.currentDevice = device
+//            }
+//            .store(in: &cancellables)
+    }
+    
+    // MARK: - Methods
+    
+    /// Toggle quiet mode to mute watch alerts, etc.
+    func toggleQuietMode() {
+        quietModeEnabled.toggle()
+        // Could integrate with watchConnectivity or local logic to silence notifications
+    }
+    
+    /// Disconnect from the radar
+    func disconnect() {
+        bluetoothManager.disconnect()
+    }
+}
+----------------------------------------
+
+
+----- ./VariAlert/VariAlert/ViewModels/AppStateViewModel.swift -----
+----------------------------------------
+//
+//  AppStateViewModel.swift
+//  VariAlert
+//
+//  Created by Carlin Eng on 2/2/25.
+//
+
+import SwiftUI
+import Combine
+
+/// High-level app state: whether a radar is connected, etc.
+class AppStateViewModel: ObservableObject {
+    @Published var isConnected: Bool = false
+    
+    // Potentially store the currently connected device.
+    @Published var connectedRadar: RadarDevice? = nil
+    
+    // Dependencies for scanning, connecting, etc.
+    let bluetoothManager: BluetoothManager
+    
+    init() {
+        self.bluetoothManager = BluetoothManager()
+        self.bluetoothManager.appState = self
+    }
+    
+    /// Called when a successful connection to a radar is established
+    func didConnect(to device: RadarDevice) {
+        self.connectedRadar = device
+        self.isConnected = true
+    }
+    
+    /// Called when the radar is disconnected
+    func didDisconnect() {
+        self.connectedRadar = nil
+        self.isConnected = false
+    }
+}
+----------------------------------------
+
+
+----- ./VariAlert/VariAlert/ViewModels/ConnectedViewModel.swift -----
+----------------------------------------
+//
+//  ConnectedViewModel.swift
+//  VariAlert
+//
+//  Created by Carlin Eng on 2/2/25.
+//
+
+import SwiftUI
+import Combine
+
+class ConnectedViewModel: ObservableObject {
+    // MARK: - Published Properties
+    @Published var vehicleCount: Int = 0
+    @Published var lastAlertTimestamp: Date? = nil
+    @Published var lastNotificationTime: String? = "No notifications sent yet"
+
+    // MARK: - Private Properties
+    private var bluetoothManager: BluetoothManager
+    private var cancellables = Set<AnyCancellable>()
+    
+    // Keep track of Threat IDs we've seen
+    private var lastThreatIDs: Set<UInt8> = []
+
+    // MARK: - Init
+    init(appState: AppStateViewModel) {
+        self.bluetoothManager = appState.bluetoothManager
+        
+        // Observe device connection changes
+        bluetoothManager.onThreatsReceived = { [weak self] data in
+            DispatchQueue.main.async {
+                self?.handleReceivedData(data)
+            }
+        }
+    }
+    
+    private func handleReceivedData(_ threats: [Threat]) {
+        // Compare the latest Threat report to the prior state.
+        // If there is a new Threat, send an alert via haptic notification
+        // Map current threats to their IDs (assuming Threat has an `id` property)
+        let currentThreatIDs = Set(threats.map { $0.id })
+        
+        // Identify new threats: those present in the current update but not in the last snapshot
+        let newThreatIDs = currentThreatIDs.subtracting(lastThreatIDs)
+        
+        if !newThreatIDs.isEmpty {
+            // Trigger notification
+            print("Sending alert to Watch.")
+            WatchConnectivityManager.shared.sendCarDetectedAlert()
+            
+            //  update alert timestamp
+            lastAlertTimestamp = Date()
+            updateLastNotificationTime()  // ✅ Format timestamp for display
+        }
+        
+        // Update our state with the latest threat IDs
+        lastThreatIDs = currentThreatIDs
+        DispatchQueue.main.async {
+            self.vehicleCount = self.lastThreatIDs.count
+            print("Total threats observed: \(self.vehicleCount)")
+        }
+    }
+
+    // MARK: - Methods
+    
+    /// Format the last notification timestamp for display
+    private func updateLastNotificationTime() {
+        DispatchQueue.main.async {
+            if let lastAlertTimestamp = self.lastAlertTimestamp {
+                let formatter = DateFormatter()
+                formatter.dateStyle = .short
+                formatter.timeStyle = .short
+                self.lastNotificationTime = "Last Alert: \(formatter.string(from: lastAlertTimestamp))"
+            } else {
+                self.lastNotificationTime = "No notifications sent yet"
+            }
+        }
+    }
+    
+    /// Placeholder for handling new vehicle detection
+    func onVehicleDetected(count: Int) {
+        vehicleCount = count
+        
+        // Notify Apple Watch
+//        watchConnectivityManager.sendCarDetectedAlert()
+    }
+    
+    /// Disconnect from the current device
+    func disconnect() {
+        bluetoothManager.disconnect()
+    }
+}
+----------------------------------------
+
+
+----- ./VariAlert/VariAlert/App/VariAlertApp.swift -----
+----------------------------------------
+//
+//  VariAlertApp.swift
+//  VariAlert
+//
+//  Created by Carlin Eng on 2/2/25.
+//
+
+import SwiftUI
+
+@main
+struct VariAlertApp: App {
+    // Optionally create shared singletons or environment objects here
+    @StateObject private var appState = AppStateViewModel()
+    @StateObject private var watchConnectivityManager = WatchConnectivityManager()
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environmentObject(appState)
+                .environmentObject(watchConnectivityManager)
+        }
+    }
+}
+----------------------------------------
+
+
+----- ./VariAlert/VariAlert/App/AppDelegate.swift -----
+----------------------------------------
+//
+//  AppDelegate.swift
+//  VariAlert
+//
+//  Created by Carlin Eng on 2/2/25.
+//
+
+import UIKit
+
+class AppDelegate: UIResponder, UIApplicationDelegate {
+    // This is only needed if you require advanced app lifecycle handling.
+    // If you do not use it, remove any references to AppDelegate in your project.
+
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
+        // Perform any custom setup here
+        return true
+    }
+
+    // MARK: UISceneSession Lifecycle
+    func application(
+        _ application: UIApplication,
+        configurationForConnecting connectingSceneSession: UISceneSession,
+        options: UIScene.ConnectionOptions
+    ) -> UISceneConfiguration {
+        return UISceneConfiguration(name: "Default Configuration",
+                                    sessionRole: connectingSceneSession.role)
+    }
+}
+----------------------------------------
+
+
+----- ./VariAlert/VariAlert/Managers/BluetoothManager.swift -----
+----------------------------------------
+//
+//  BluetoothManager.swift
+//  VariAlert
+//
+//  Created by Carlin Eng on 2/2/25.
+//
+
+import Foundation
+import CoreBluetooth
+import Combine
+
+class BluetoothManager: NSObject, ObservableObject {
+    static let garminServiceUUID = CBUUID(string: "6A4E3200-667B-11E3-949A-0800200C9A66")
+    static let deviceInfoService = "180A"
+    
+    var onThreatsReceived: (([Threat]) -> Void)?
+
+    // MARK: - Published Properties
+    @Published var discoveredRadars: [RadarDevice] = []
+    @Published var discoveredCharacteristics: [CBCharacteristic] = []
+    @Published var isScanning: Bool = false
+    @Published var isBluetoothEnabled: Bool = true
+    @Published var isConnected: Bool = false
+
+    // MARK: - Private Properties
+    private var centralManager: CBCentralManager!
+    private var connectedPeripheral: CBPeripheral?
+
+    // Keep references to discovered peripherals, etc.
+    weak var appState: AppStateViewModel?
+    
+    override init() {
+        super.init()
+        centralManager = CBCentralManager(delegate: self, queue: nil)
+    }
+    
+    // initializer for injecting mock instances
+    init(centralManager: CBCentralManager) {
+        self.centralManager = centralManager
+        super.init()
+    }
+    
+    // MARK: - Public Methods
+    
+    /// Begin scanning for Garmin Varia radar devices.
+    func startScanning() {
+        guard centralManager.state == .poweredOn else {
+            print("Bluetooth is not powered on.")
+            isBluetoothEnabled = false
+            isScanning = false
+            self.stopScanning()
+            return
+        }
+        
+        isBluetoothEnabled = true
+        isScanning = true
+        discoveredRadars.removeAll()
+        
+        centralManager.scanForPeripherals(withServices: [BluetoothManager.garminServiceUUID], options: nil)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) { // Stop after 5 seconds
+            self.stopScanning()
+        }
+    }
+    
+    /// Stop scanning for devices.
+    func stopScanning() {
+        isScanning = false
+        centralManager?.stopScan()
+        print("Stopped scanning.")
+    }
+    
+    /// Attempt to connect to a specific radar device.
+    func connect(to device: RadarDevice) {
+        // Normally you'd have a reference to the matching CBPeripheral
+        // Then you call centralManager?.connect(peripheral, options: nil)
+        print("Attempting to connect to \(device.deviceName).")
+        // Connect to the specific CBPeripheral that corresponds to the device
+        guard discoveredRadars.contains(where: { $0.deviceName == device.deviceName }) else { return }
+        centralManager.connect(device.peripheral, options: nil)
+        self.stopScanning()
+    }
+    
+    /// Disconnect from currently connected device (if any).
+    func disconnect() {
+        if let peripheral = connectedPeripheral {
+            centralManager.cancelPeripheralConnection(peripheral)
+            connectedPeripheral = nil
+            isConnected = false
+        }
+    }
+}
+
+// MARK: - CBCentralManagerDelegate
+extension BluetoothManager: CBCentralManagerDelegate, CBPeripheralDelegate {
+    func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        switch central.state {
+        case .unknown, .resetting, .unsupported, .unauthorized:
+            print("Bluetooth state not valid for scanning.")
+        case .poweredOff:
+            print("Bluetooth powered off.")
+        case .poweredOn:
+            print("Bluetooth powered on. Ready to scan.")
+        @unknown default:
+            print("Unknown Bluetooth state.")
+        }
+    }
+    
+    func centralManager(_ central: CBCentralManager,
+                        didDiscover peripheral: CBPeripheral,
+                        advertisementData: [String: Any],
+                        rssi RSSI: NSNumber) {
+        let radarDevice = RadarDevice(
+            deviceName: peripheral.name ?? "Unknown",
+            batteryLevel: 0, // Placeholder, update as needed
+            firmwareVersion: "Unknown", // Placeholder, update as needed
+            signalStrength: "\(RSSI)",
+            peripheral: peripheral
+        )
+        
+        // Avoid adding duplicates
+        if !discoveredRadars.contains(where: { $0.peripheral.identifier == peripheral.identifier }) {
+            discoveredRadars.append(radarDevice)
+        }
+        
+        print("Discovered device: \(radarDevice.deviceName)")
+    }
+    
+    func centralManager(_ central: CBCentralManager,
+                        didConnect peripheral: CBPeripheral) {
+        connectedPeripheral = peripheral
+        isConnected = true
+        print("Connected to: \(peripheral.name ?? "Unknown device")")
+        
+        peripheral.delegate = self
+        peripheral.discoverServices([BluetoothManager.garminServiceUUID])
+        
+        if let radarDevice = discoveredRadars.first(where: { $0.deviceName == peripheral.name }) {
+            DispatchQueue.main.async {
+                self.appState?.didConnect(to: radarDevice)
+            }
+        } else {
+            isConnected = false
+            self.disconnect()
+            print("⚠️ No matching RadarDevice found for \(peripheral.name ?? "Unknown device")")
+            DispatchQueue.main.async {
+                self.appState?.didDisconnect()
+            }
+        }
+    }
+    
+    func centralManager(_ central: CBCentralManager,
+                        didFailToConnect peripheral: CBPeripheral,
+                        error: Error?) {
+        print("Failed to connect: \(error?.localizedDescription ?? "unknown error")")
+    }
+    
+    func centralManager(_ central: CBCentralManager,
+                        didDisconnectPeripheral peripheral: CBPeripheral,
+                        error: Error?) {
+        print("Disconnected from \(peripheral.name ?? "Unknown")")
+        connectedPeripheral = nil
+        isConnected = false
+        print("Disconnected from: \(peripheral.name ?? "Unknown device")")
+        DispatchQueue.main.async {
+            self.appState?.didDisconnect()
+        }
+    }
+    
+    func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        if let error = error {
+            print("Error discovering services: \(error.localizedDescription)")
+            return
+        }
+        
+        if let services = peripheral.services {
+            for service in services {
+                if service.uuid == BluetoothManager.garminServiceUUID {
+                    peripheral.discoverCharacteristics(nil, for: service)
+                    break
+                }
+            }
+        }
+    }
+    
+    func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
+        if let error = error {
+            print("Error discovering characteristics: \(error.localizedDescription)")
+            return
+        }
+
+        if let characteristics = service.characteristics {
+            if service.uuid == BluetoothManager.garminServiceUUID {
+                discoveredCharacteristics = characteristics
+                for characteristic in characteristics {
+                    if characteristic.properties.contains(.notify) {
+                        peripheral.setNotifyValue(true, for: characteristic)
+                    } else if characteristic.properties.contains(.read) {
+                        peripheral.readValue(for: characteristic)
+                    } else {
+                        print("Characteristic \(characteristic.uuid.uuidString) is neither readable nor notifiable")
+                    }
+                }
+            }
+        }
+    }
+
+    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+
+        if let error = error {
+            print("Error updating value for characteristic: \(error.localizedDescription)")
+            return
+        }
+
+        if let index = discoveredCharacteristics.firstIndex(where: { $0.uuid == characteristic.uuid }) {
+            discoveredCharacteristics[index] = characteristic
+        }
+        
+        if let data = characteristic.value {
+            if let threats = parseRadarData(data) {
+                // Now we have an array of Threat objects.
+                // Pass data to the ViewModel or take appropriate action.
+                
+                onThreatsReceived?(threats)
+
+                // Logging statement:
+                for threat in threats {
+                    print("Threat id: \(String(format: "%02X", threat.id)), distance: \(threat.distance)m, speed: \(threat.speed) km/h")
+                }
+            }
+        }
+    }
+}
+
+/// Parses a complete radar data payload into an array of Threats.
+/// - Parameter data: A Data object representing a complete payload (1 + 3*i bytes).
+/// - Returns: An array of Threat objects, or nil if the payload length is invalid.
+func parseRadarData(_ data: Data) -> [Threat]? {
+    var threats: [Threat] = []
+    if data.count == 1 {
+        print("🔹 Received single-byte packet (\(String(format: "%02X", data[0]))) - No threats detected.")
+        return threats
+    }
+
+    // The payload must be at least 4 bytes (header + one threat)
+    guard data.count >= 4, (data.count - 1) % 3 == 0 else {
+        print("⚠️ Invalid payload length: \(data.count) bytes - ignoring")
+        return nil
+    }
+    
+    // The first byte is the header.
+    // You might extract the packet identifier if needed:
+    let header = data[0]
+    let packetID = header >> 4   // high nibble (first 4 bits)
+    // let otherInfo = header & 0x0F  // lower nibble, if needed
+    
+    let threatCount = (data.count - 1) / 3
+
+    
+    for i in 0..<threatCount {
+        let base = 1 + i * 3
+        // Ensure we have enough bytes (should always be true due to our guard above)
+        guard base + 2 < data.count else { continue }
+        
+        let threatID = data[base]
+        let distance = data[base + 1]
+        let speed = data[base + 2]
+        
+        let threat = Threat(id: threatID, distance: distance, speed: speed)
+        threats.append(threat)
+    }
+    
+    print("📡 Parsed packet \(String(format: "%X", packetID)) with \(threats.count) threat(s)")
+    return threats
+}
+----------------------------------------
+
+
+----- ./VariAlert/VariAlert/Managers/WatchConnectivityManager.swift -----
+----------------------------------------
+//
+//  WatchConnectivityManager.swift
+//  VariAlert
+//
+//  Created by Carlin Eng on 2/2/25.
+//
+
+import Foundation
+import WatchConnectivity
+import Combine
+
+class WatchConnectivityManager: NSObject, ObservableObject {
+    // MARK: - Singleton
+    static let shared = WatchConnectivityManager()
+    
+    // MARK: - Properties
+    private var session: WCSession?
+        
+    override init() {
+        super.init()
+        setupSession()
+    }
+    
+    // MARK: - Setup
+    private func setupSession() {
+        if WCSession.isSupported() {
+            session = WCSession.default
+            session?.delegate = self
+            session?.activate()
+        }
+    }
+    
+    // MARK: - Public Methods
+    
+    /// Send a message to the watch to trigger a haptic feedback or local notification
+    func sendCarDetectedAlert() {
+        print("Sending car-detected message to the Watch...")
+
+        guard let session = session, session.isReachable else {
+            print("Watch session not reachable or not initialized.")
+            return
+        }
+
+        let message: [String: Any] = ["alert": "car_detected"]
+        session.sendMessage(message, replyHandler: nil) { error in
+            print("Error sending message: \(error.localizedDescription)")
+        }
+    }
+    /// Optionally handle other watch-related communication (e.g. watch -> phone).
+}
+
+// MARK: - WCSessionDelegate
+extension WatchConnectivityManager: WCSessionDelegate {
+    func sessionDidBecomeInactive(_ session: WCSession) {}
+    func sessionDidDeactivate(_ session: WCSession) {
+        // Re-activate if needed
+        session.activate()
+    }
+    func sessionWatchStateDidChange(_ session: WCSession) {}
+    
+    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState,
+                 error: Error?) {
+        if let error = error {
+            print("Watch session activation failed: \(error.localizedDescription)")
+        } else {
+            print("Watch session activated.")
+        }
+    }
+    
+    // If watch sends message to phone
+    func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
+        print("Received message from watch: \(message)")
+    }
+}
+----------------------------------------
+
+
+----- ./VariAlert/VariAlert/Models/RadarDevice.swift -----
+----------------------------------------
+//
+//  RadarDevice.swift
+//  VariAlert
+//
+//  Created by Carlin Eng on 2/2/25.
+//
+
+import Foundation
+import CoreBluetooth
+
+/// Represents a Garmin Varia radar device.
+struct RadarDevice: Identifiable, Equatable {
+    let id: UUID = UUID()         // Unique identifier for SwiftUI lists.
+    
+    // Placeholder properties; these will be used in real logic later.
+    let deviceName: String
+    let batteryLevel: Int
+    let firmwareVersion: String
+    let signalStrength: String
+    let peripheral: CBPeripheral
+    
+    // You could also store a device ID from the Bluetooth discovery.
+    // let bluetoothIdentifier: String
+    
+    // Example equality check comparing all relevant fields (or just 'id' if unique)
+    static func == (lhs: RadarDevice, rhs: RadarDevice) -> Bool {
+        return lhs.id == rhs.id
+            && lhs.deviceName == rhs.deviceName
+            && lhs.batteryLevel == rhs.batteryLevel
+            && lhs.firmwareVersion == rhs.firmwareVersion
+            && lhs.signalStrength == rhs.signalStrength
+    }
+}
+----------------------------------------
+
+
+----- ./VariAlert/VariAlert/Models/Threat.swift -----
+----------------------------------------
+//
+//  Threat.swift
+//  VariAlert
+//
+//  Created by Carlin Eng on 2/2/25.
+//
+
+import Foundation
+
+/// Represents a detected vehicle threat from the Garmin Varia radar.
+struct Threat: Identifiable {
+    let id: UInt8        // Unique identifier per threat
+    let distance: UInt8  // Distance to the threat in meters
+    let speed: UInt8     // Speed in km/h (raw value)
+}
+----------------------------------------
+
+
+----- ./VariAlert/VariAlert/Views/DisconnectedView.swift -----
+----------------------------------------
+//
+//  DisconnectedView.swift
+//  VariAlert
+//
+//  Created by Carlin Eng on 2/2/25.
+//
+
+import SwiftUI
+
+struct DisconnectedView: View {
+
+    @EnvironmentObject var appState: AppStateViewModel
+    @StateObject private var viewModel: DisconnectedViewModel
+
+    init(appState: AppStateViewModel) {
+        let vm = DisconnectedViewModel(appState: appState)
+        _viewModel = StateObject(wrappedValue: vm)
+    }
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("Disconnected")
+                .font(.largeTitle)
+            
+            if viewModel.isSearching {
+                Text("Searching...")
+                    .foregroundColor(.blue)
+            } else {
+                Button("Search for Radars") {
+                    viewModel.startSearch()
+                }
+            }
+            
+            // Display discovered radars
+            if !viewModel.isBluetoothEnabled {
+                Text("Please enable Bluetooth")
+                    .foregroundColor(.red)
+                    .padding()
+            } else {
+                if viewModel.detectedRadars.isEmpty && !viewModel.isSearching {
+                    Text("No radars found.")
+                        .foregroundColor(.gray)
+                        .padding()
+                }
+                
+                if let error = viewModel.errorMessage {
+                    Text(error)
+                        .foregroundColor(.red)
+                }
+                
+                List(viewModel.detectedRadars) { radar in
+                    Button(radar.deviceName) {
+                        // Attempt to connect
+                        viewModel.connectToRadar(radar)
+                    }
+                }
+            }
+            if let error = viewModel.errorMessage {
+                Text(error)
+                    .foregroundColor(.red)
+            }
+            
+            Spacer()
+        }
+        .padding()
+    }
+    
+    // MARK: - Private Methods
+//    private func connectToDevice(_ device: RadarDevice) {
+//        // You’d normally use the real bluetoothManager here
+//        // For the stub, just pretend we connected successfully:
+//        print("Connecting to \(device.name)")
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//            // Simulate success
+//            appState.isConnected = true
+//        }
+//    }
+}
+----------------------------------------
+
+
+----- ./VariAlert/VariAlert/Views/SettingsView.swift -----
+----------------------------------------
+//
+//  SettingsView.swift
+//  VariAlert
+//
+//  Created by Carlin Eng on 2/2/25.
+//
+
+import SwiftUI
+
+struct SettingsView: View {
+    // You might want an @ObservedObject or @EnvironmentObject
+    // For this stub, we’ll just create one locally.
+    @StateObject private var viewModel = SettingsViewModel(bluetoothManager: BluetoothManager())
+    
+    @Environment(\.presentationMode) var presentationMode
+
+    var body: some View {
+        NavigationView {
+            Form {
+                Section(header: Text("Device Management")) {
+                    if let device = viewModel.currentDevice {
+                        Text("Connected to: \(device.deviceName)")
+                        Text("Battery: \(device.batteryLevel)%")
+                        Button("Disconnect") {
+                            viewModel.disconnect()
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    } else {
+                        Text("No device connected.")
+                    }
+                }
+                
+                Section(header: Text("Alerts")) {
+                    Toggle("Quiet Mode", isOn: $viewModel.quietModeEnabled)
+                        .onChange(of: viewModel.quietModeEnabled) { _ in
+                            viewModel.toggleQuietMode()
+                        }
+                }
+                
+                Section(header: Text("App Information")) {
+                    Text("App Version: \(viewModel.appVersion)")
+                }
+            }
+            .navigationTitle("Settings")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Close") {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
+            }
+        }
+    }
+}
+----------------------------------------
+
+
+----- ./VariAlert/VariAlert/Views/ConnectedView.swift -----
+----------------------------------------
+//
+//  ConnectedView.swift
+//  VariAlert
+//
+//  Created by Carlin Eng on 2/2/25.
+//
+
+import SwiftUI
+
+struct ConnectedView: View {
+    @StateObject var viewModel: ConnectedViewModel
+    @EnvironmentObject var appState: AppStateViewModel
+    
+    @State private var showSettings = false
+    
+
+    init(appState: AppStateViewModel) {
+        _viewModel = StateObject(wrappedValue: ConnectedViewModel(appState: appState))
+    }
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("Connected Screen")
+                .font(.largeTitle)
+            
+            Text(viewModel.lastNotificationTime != nil ? "Last notification time: \(viewModel.lastNotificationTime!)" : "No notifications sent yet")
+                .foregroundColor(.gray)
+
+            // Show vehicle detection
+            if viewModel.vehicleCount > 0 {
+                Text("\(viewModel.vehicleCount) vehicles detected!")
+                    .foregroundColor(.red)
+            } else {
+                Text("No vehicles detected.")
+                    .foregroundColor(.green)
+            }
+                        
+            // Button to open settings
+            Button("Settings") {
+                showSettings.toggle()
+            }
+            .sheet(isPresented: $showSettings) {
+                SettingsView()
+            }
+            
+            // Disconnect button
+            Button("Disconnect") {
+                disconnectDevice()
+            }
+            .foregroundColor(.red)
+            
+            Spacer()
+        }
+        .padding()
+    }
+    
+    private func disconnectDevice() {
+        viewModel.disconnect()
+        // In a real app, you'd also have a binding or environment object
+        // to transition back to DisconnectedView automatically.
+    }
+}
+----------------------------------------
+
+
+----- ./VariAlert/VariAlert/Views/ContentView.swift -----
+----------------------------------------
+//
+//  ContentView.swift
+//  VariAlert
+//
+//  Created by Carlin Eng on 2/2/25.
+//
+
+import SwiftUI
+
+struct ContentView: View {
+    @EnvironmentObject var appState: AppStateViewModel
+    @EnvironmentObject var watchConnectivityManager: WatchConnectivityManager
+    
+    var body: some View {
+        NavigationView {
+            if appState.isConnected {
+                ConnectedView(appState: appState)
+            } else {
+                DisconnectedView(appState: appState)
+            }
+        }
+    }
+}
+----------------------------------------
+
+
+----- ./VariAlert/VariAlertTests/MockBluetooth.swift -----
+----------------------------------------
+//
+//  MockBluetooth.swift
+//  VariAlert
+//
+//  Created by Carlin Eng on 2/6/25.
+//
+
+import CoreBluetooth
+
+class MockCentralManager: CBCentralManager {
+    var mockState: CBManagerState = .poweredOn
+    
+    override var state: CBManagerState {
+        return mockState
+    }
+    
+    var scannedPeripherals: [PeripheralProtocol] = []
+    var connectedPeripheral: PeripheralProtocol?
+    var testPeripheral: CBPeripheral? // Injected in tests
+
+    override func scanForPeripherals(withServices serviceUUIDs: [CBUUID]?, options: [String : Any]? = nil) {
+        guard let peripheral = testPeripheral else {
+            print("No test peripheral available.")
+            return
+        }
+        
+        scannedPeripherals.append(MockPeripheral(name: peripheral.name ?? "Mock Radar", identifier: peripheral.identifier))
+        delegate?.centralManager?(self, didDiscover: peripheral, advertisementData: [:], rssi: NSNumber(value: -50))
+    }
+    
+    override func stopScan() {
+        scannedPeripherals.removeAll()
+    }
+    
+    override func connect(_ peripheral: CBPeripheral, options: [String : Any]? = nil) {
+        connectedPeripheral = MockPeripheral(name: peripheral.name ?? "Mock Radar", identifier: peripheral.identifier)
+        delegate?.centralManager?(self, didConnect: peripheral)
+    }
+    
+    override func cancelPeripheralConnection(_ peripheral: CBPeripheral) {
+        connectedPeripheral = nil
+        delegate?.centralManager?(self, didDisconnectPeripheral: peripheral, error: nil)
+    }
+}
+
+// Define a protocol for mockable peripherals
+protocol PeripheralProtocol {
+    var name: String? { get }
+    var identifier: UUID { get }
+}
+
+// Use a struct to mock peripheral behavior
+struct MockPeripheral: PeripheralProtocol {
+    var name: String?
+    var identifier: UUID
+}
+
+
+----------------------------------------
+
+
+----- ./VariAlert/VariAlertTests/BluetoothManagerTests.swift -----
+----------------------------------------
+//
+//  BluetoothManagerTests.swift
+//  VariAlertTests
+//
+//  Created by Carlin Eng on 2/6/25.
+//
+
+import XCTest
+import CoreBluetooth
+@testable import VariAlert
+
+class BluetoothManagerTests: XCTestCase {
+    var bluetoothManager: BluetoothManager!
+    var mockCentralManager: MockCentralManager!
+
+    override func setUp() {
+        super.setUp()
+        mockCentralManager = MockCentralManager()
+        bluetoothManager = BluetoothManager(centralManager: mockCentralManager)
+    }
+
+    override func tearDown() {
+        bluetoothManager = nil
+        mockCentralManager = nil
+        super.tearDown()
+    }
+    
+    // Test Bluetooth State Handling
+    func testBluetoothStateUpdates() {
+        mockCentralManager.mockState = .poweredOff
+        bluetoothManager.centralManagerDidUpdateState(mockCentralManager)
+        XCTAssertFalse(bluetoothManager.isBluetoothEnabled, "Bluetooth should be disabled when powered off")
+        
+        mockCentralManager.mockState = .poweredOn
+        bluetoothManager.centralManagerDidUpdateState(mockCentralManager)
+        XCTAssertTrue(bluetoothManager.isBluetoothEnabled, "Bluetooth should be enabled when powered on")
+    }
+
+    // Test Start Scanning
+    func testStartScanningFindsDevices() {
+        bluetoothManager.startScanning()
+        XCTAssertTrue(bluetoothManager.isScanning, "Bluetooth should be scanning for devices")
+        XCTAssertEqual(bluetoothManager.discoveredRadars.count, 1, "One device should be discovered")
+    }
+
+    // Test Stop Scanning
+    func testStopScanningStopsDiscovery() {
+        bluetoothManager.startScanning()
+        bluetoothManager.stopScanning()
+        XCTAssertFalse(bluetoothManager.isScanning, "Bluetooth scanning should stop")
+    }
+
+    // Test Connection Success
+    func testConnectToRadar() {
+        let mockDevice = RadarDevice(deviceName: "Mock Radar", batteryLevel: 100, firmwareVersion: "1.0", signalStrength: "Strong", peripheral: MockPeripheralWrapper())
+        bluetoothManager.discoveredRadars.append(mockDevice) // Manually add a device
+
+        guard let device = bluetoothManager.discoveredRadars.first else {
+            XCTFail("No radar device found")
+            return
+        }
+        
+        bluetoothManager.connect(to: device)
+        
+        XCTAssertTrue(bluetoothManager.isConnected, "Device should be connected")
+    }
+
+    // Test Disconnection
+    func testDisconnectFromRadar() {
+        bluetoothManager.startScanning()
+        let device = bluetoothManager.discoveredRadars.first!
+        
+        bluetoothManager.connect(to: device)
+        bluetoothManager.disconnect()
+        
+        XCTAssertFalse(bluetoothManager.isConnected, "Device should be disconnected")
+    }
+
+    // Test Threat Data Parsing
+    func testParseRadarData() {
+        let rawData = Data([0x01, 0xA2, 0x14, 0x32]) // Example data payload
+        let threats = parseRadarData(rawData)
+        
+        XCTAssertNotNil(threats, "Parsing should return a valid threat list")
+        XCTAssertEqual(threats?.count, 1, "Should detect one threat")
+        XCTAssertEqual(threats?.first?.distance, 0x14, "Threat distance should be parsed correctly")
+    }
+}
+
+----------------------------------------
+
+
+----- ./VariAlert/VariAlertTests/VariAlertTests.swift -----
+----------------------------------------
+//
+//  VariAlertTests.swift
+//  VariAlertTests
+//
+//  Created by Carlin Eng on 2/6/25.
+//
+
+import XCTest
+
+final class VariAlertTests: XCTestCase {
+
+    override func setUpWithError() throws {
+        // Put setup code here. This method is called before the invocation of each test method in the class.
+    }
+
+    override func tearDownWithError() throws {
+        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    }
+
+    func testExample() throws {
+        // This is an example of a functional test case.
+        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        // Any test you write for XCTest can be annotated as throws and async.
+        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
+        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    }
+
+    func testPerformanceExample() throws {
+        // This is an example of a performance test case.
+        measure {
+            // Put the code you want to measure the time of here.
+        }
+    }
+
+}
+----------------------------------------
+
+
+----- ./VariAlert/VariAlertWatch Watch App/IdleView.swift -----
+----------------------------------------
+//
+//  IdleView.swift
+//  VariAlertWatch Watch App
+//
+//  Created by Carlin Eng on 2/3/25.
+//
+
+import SwiftUI
+
+struct IdleView: View {
+    @EnvironmentObject var appState: WatchAppState
+    @EnvironmentObject var workoutManager: WorkoutSessionManager
+    
+    var body: some View {
+        VStack(spacing: 16) {
+            Text("Idle State")
+                .font(.title2)
+
+            Button("Start Workout") {
+                // Start a workout session
+                workoutManager.startWorkout()
+                // Switch mode
+                appState.mode = .workout
+            }
+            .font(.headline)
+        }
+        .padding()
+    }
+}
+----------------------------------------
+
+
+----- ./VariAlert/VariAlertWatch Watch App/HapticTestView.swift -----
+----------------------------------------
+//
+//  HapticTestView.swift
+//  VariAlertWatch Watch App
+//
+//  Created by Carlin Eng on 2/10/25.
+//
+
+import SwiftUI
+import WatchKit
+
+struct HapticTestView: View {
+    let hapticTypes: [(String, WKHapticType)] = [
+        ("Retry", .retry),
+        ("Success", .success),
+        ("Notification", .notification),
+        ("Click", .click),
+        ("Failure", .failure),
+        ("navigationGeneric", .navigationGenericManeuver),
+        ("nagivationLeftTurn", .navigationLeftTurn),
+        ("navigationRightTurn", .navigationRightTurn),
+        ("underwaterDepthPrompt", .underwaterDepthPrompt),
+        ("underwaterDepthCriticalPrompt", .underwaterDepthCriticalPrompt)
+    ]
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 8) {
+                Text("Haptic Tester")
+                    .font(.headline)
+                
+                ForEach(hapticTypes, id: \.0) { haptic in
+                    Button(action: {
+                        WKInterfaceDevice.current().play(haptic.1)
+                    }) {
+                        Text(haptic.0)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.gray.opacity(0.2))
+                            .cornerRadius(8)
+                    }
+                }
+            }
+            .padding()
+        }
+    }
+}
+----------------------------------------
+
+
+----- ./VariAlert/VariAlertWatch Watch App/WorkoutView.swift -----
+----------------------------------------
+//
+//  WorkoutView.swift
+//  VariAlertWatch Watch App
+//
+//  Created by Carlin Eng on 2/3/25.
+//
+
+import SwiftUI
+
+struct WorkoutView: View {
+    @EnvironmentObject var appState: WatchAppState
+    @EnvironmentObject var workoutManager: WorkoutSessionManager
+    
+    // Use a state to track whether the user is currently long-pressing
+    @State private var isPressing = false
+    
+    var body: some View {
+        VStack(spacing: 16) {
+            // Display the current time (automatically updates every minute/second)
+            Text(Date(), style: .time)
+                .font(.title)
+
+            Text("Workout Active")
+                .font(.subheadline)
+
+            // Pause Ride Button
+            Button(action: {}) {
+                Text("Pause Ride")
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(isPressing ? Color.red.opacity(0.7) : Color.red) // Changes shade when pressed
+                    .cornerRadius(10)
+            }
+            .simultaneousGesture(
+                LongPressGesture(minimumDuration: 1.0) // 1 second press required
+                    .onChanged { _ in isPressing = true } // Start changing button shade
+                    .onEnded { _ in
+                        isPressing = false
+                        stopWorkoutSession() // Trigger app state change
+                    }
+            )
+        }
+        .padding()
+    }
+    
+    private func stopWorkoutSession() {
+        workoutManager.stopWorkout()
+        appState.mode = .idle
+    }
+}
+----------------------------------------
+
+
+----- ./VariAlert/VariAlertWatch Watch App/WatchAppState.swift -----
+----------------------------------------
+//
+//  WatchAppState.swift
+//  VariAlertWatch Watch App
+//
+//  Created by Carlin Eng on 2/3/25.
+//
+
+import SwiftUI
+import HealthKit
+
+class WatchAppState: ObservableObject {
+    enum Mode {
+        case idle
+        case workout
+    }
+
+    @Published var mode: Mode = .idle
+}
+----------------------------------------
+
+
+----- ./VariAlert/VariAlertWatch Watch App/WatchConnectivityManager.swift -----
+----------------------------------------
+//
+//  WatchConnectivityManager.swift
+//  VariAlertWatch Watch App
+//
+//  Created by Carlin Eng on 2/2/25.
+//
+
+import WatchConnectivity
+import Combine
+import SwiftUI
+
+class WatchConnectivityManager: NSObject, ObservableObject {
+    // MARK: - Properties
+    private var session: WCSession?
+    private var appState: WatchAppState  // Track the app's current mode
+
+    init(appState: WatchAppState) {
+        self.appState = appState
+        super.init()
+        setupSession()
+    }
+    
+    // MARK: - Setup
+    private func setupSession() {
+        // Check if WatchConnectivity is supported
+        if WCSession.isSupported() {
+            session = WCSession.default
+            session?.delegate = self
+            session?.activate()
+        }
+    }
+    
+    // MARK: - Methods
+    
+    /// Example method to respond to an incoming message from iPhone
+    func handleIncomingMessage(_ message: [String: Any]) {
+        
+        guard appState.mode == .workout else {
+            print("Haptic alert skipped: App is in Idle mode")
+            return
+        }
+
+        // Parse the dictionary for "alert": "car_detected" or similar
+        if let alert = message["alert"] as? String, alert == "car_detected" {
+            for i in 0..<4 {
+                DispatchQueue.main.asyncAfter(deadline: .now() + (0.3 * Double(i))) {
+                    WKInterfaceDevice.current().play(.retry)
+                }
+            }
+        }
+    }
+}
+
+// MARK: - WCSessionDelegate
+extension WatchConnectivityManager: WCSessionDelegate {
+    func session(
+        _ session: WCSession,
+        activationDidCompleteWith activationState: WCSessionActivationState,
+        error: Error?
+    ) {
+        if let error = error {
+            print("Watch session activation failed: \(error.localizedDescription)")
+        } else {
+            print("Watch session activated.")
+        }
+    }
+        
+    // For receiving messages from iPhone in real time
+    func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
+        print("Watch received message: \(message)")
+        handleIncomingMessage(message)
+    }
+}
+----------------------------------------
+
+
+----- ./VariAlert/VariAlertWatch Watch App/VariAlertWatchApp.swift -----
+----------------------------------------
+//
+//  VariAlertWatchApp.swift
+//  VariAlertWatch Watch App
+//
+//  Created by Carlin Eng on 2/2/25.
+//
+
+import SwiftUI
+import WatchKit
+import UserNotifications
+
+@main
+struct VariAlertWatch_Watch_AppApp: App {
+    // Main app state
+    @StateObject private var watchAppState = WatchAppState()
+    
+    // Connectivity manager for receiving “car detected” messages
+    @StateObject private var connectivityManager: WatchConnectivityManager
+    
+    // Workout manager to start/stop the workout session
+    @StateObject private var workoutManager = WorkoutSessionManager()
+
+    // Custom initializer to properly inject WatchAppState into WatchConnectivityManager
+    init() {
+        _connectivityManager = StateObject(wrappedValue: WatchConnectivityManager(appState: watchAppState))
+    }
+
+    var body: some Scene {
+        WindowGroup {
+            // Main UI (or empty if no direct interface needed)
+            ContentView()
+                .environmentObject(connectivityManager)
+                .environmentObject(workoutManager)
+                .environmentObject(watchAppState)
+        }
+    }
+}
+
+struct ContentView: View {
+    @EnvironmentObject var appState: WatchAppState
+
+    var body: some View {
+        NavigationView {
+            VStack {
+                switch appState.mode {
+                case .idle:
+                    IdleView()
+                case .workout:
+                    WorkoutView()
+                }
+            }
+        }
+    }
+}
+
+#Preview {
+    ContentView()
+}
+----------------------------------------
+
+
+----- ./VariAlert/VariAlertWatch Watch App/WorkoutSessionManager.swift -----
+----------------------------------------
+//
+//  WorkoutSessionManager.swift
+//  VariAlertWatch Watch App
+//
+//  Created by Carlin Eng on 2/3/25.
+//
+
+import HealthKit
+import SwiftUI
+
+class WorkoutSessionManager: NSObject, ObservableObject {
+    private let healthStore = HKHealthStore()
+    private var workoutSession: HKWorkoutSession?
+    private var workoutBuilder: HKLiveWorkoutBuilder?
+
+    func startWorkout() {
+        
+        let typesToShare: Set = [HKObjectType.workoutType()]
+        let typesToRead: Set = [
+            HKObjectType.quantityType(forIdentifier: .heartRate)!
+        ]
+
+        healthStore.requestAuthorization(toShare: typesToShare, read: typesToRead) { success, error in
+            if let error = error {
+                print("Error requesting HealthKit authorization: \(error.localizedDescription)")
+                return
+            }
+            
+            guard success else {
+                print("HealthKit authorization was not granted.")
+                return
+            }
+            
+            // Configure a workout session for 'Other' type (or 'Cycling' if appropriate).
+            let configuration = HKWorkoutConfiguration()
+            configuration.activityType = .cycling  // or .other
+            configuration.locationType = .outdoor
+            
+            do {
+                self.workoutSession = try HKWorkoutSession(healthStore: self.healthStore, configuration: configuration)
+                self.workoutBuilder = self.workoutSession?.associatedWorkoutBuilder()
+                
+                // Link session & builder
+                self.workoutSession?.delegate = self
+                self.workoutBuilder?.delegate = self
+                
+                // Start the session
+                self.workoutSession?.startActivity(with: Date())
+                self.workoutBuilder?.beginCollection(withStart: Date()) { (success, error) in
+                    if let error = error {
+                        print("Error beginning workout collection: \(error.localizedDescription)")
+                    }
+                }
+                
+                print("Workout session started.")
+            } catch {
+                print("Failed to start workout session: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    func stopWorkout() {
+        guard let session = workoutSession else { return }
+
+        // Mark the end of the workout
+        session.end()
+        workoutBuilder?.endCollection(withEnd: Date()) { (success, error) in
+            if let error = error {
+                print("Error ending workout collection: \(error.localizedDescription)")
+            }
+            print("Workout session ended.")
+        }
+    }
+}
+
+extension WorkoutSessionManager: HKWorkoutSessionDelegate {
+    func workoutSession(_ workoutSession: HKWorkoutSession, didChangeTo toState: HKWorkoutSessionState,
+                        from fromState: HKWorkoutSessionState, date: Date) {
+        switch toState {
+        case .running:
+            print("Workout session is running.")
+        case .ended:
+            print("Workout session ended.")
+        default:
+            break
+        }
+    }
+
+    func workoutSession(_ workoutSession: HKWorkoutSession, didGenerate event: HKWorkoutEvent) {
+        // Handle events if needed
+    }
+
+    func workoutSession(_ workoutSession: HKWorkoutSession, didFailWithError error: Error) {
+        print("Workout session failed: \(error.localizedDescription)")
+    }
+}
+
+extension WorkoutSessionManager: HKLiveWorkoutBuilderDelegate {
+    func workoutBuilderDidCollectEvent(_ workoutBuilder: HKLiveWorkoutBuilder) {
+    }
+    
+    func workoutBuilder(_ workoutBuilder: HKLiveWorkoutBuilder, didCollectDataOf collectedTypes: Set<HKSampleType>) {
+        print("Workout builder collected data: \(collectedTypes)")
+    }
+}
+----------------------------------------
+
