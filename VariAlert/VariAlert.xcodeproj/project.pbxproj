@@ -303,7 +303,8 @@
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "VariAlert needs HealthKit to track your cycling workout.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "VariAlert needs HealthKit to track your cycling workout.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = YES;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.carlineng.VariAlert;
+			INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -336,7 +337,8 @@
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "VariAlert needs HealthKit to track your cycling workout.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "VariAlert needs HealthKit to track your cycling workout.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = YES;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.carlineng.VariAlert;
+			INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
