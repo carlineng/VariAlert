@@ -19,7 +19,7 @@ struct OnboardingView: View {
             OnboardingPage(
                 systemImage: "antenna.radiowaves.left.and.right",
                 title: "RadAlert",
-                body: "Connects to your Garmin Varia radar and vibrates when vehicles approach from behind — so you can focus on the road ahead.",
+                message: "Connects to your Garmin Varia radar and vibrates when vehicles approach from behind — so you can focus on the road ahead.",
                 button: nil
             )
             .tag(0)
@@ -28,7 +28,7 @@ struct OnboardingView: View {
             OnboardingPage(
                 systemImage: "checklist",
                 title: "What You Need",
-                body: "• Garmin Varia radar (RTL 515, RTL 516, or compatible)\n• Bluetooth — to connect to the radar\n• Health — to track your ride and keep the app running in the background",
+                message: "• Garmin Varia radar (RTL 515, RTL 516, or compatible)\n• Bluetooth — to connect to the radar\n• Health — to track your ride and keep the app running in the background",
                 button: nil
             )
             .tag(1)
@@ -37,7 +37,7 @@ struct OnboardingView: View {
             OnboardingPage(
                 systemImage: "exclamationmark.triangle",
                 title: "Safety Notice",
-                body: "RadAlert is a supplemental awareness tool, not a certified safety device. Always follow traffic laws and rely on your own judgement.",
+                message: "RadAlert is a supplemental awareness tool, not a certified safety device. Always follow traffic laws and rely on your own judgement.",
                 button: ("Get Started", getStarted)
             )
             .tag(2)
@@ -55,7 +55,7 @@ struct OnboardingView: View {
 private struct OnboardingPage: View {
     let systemImage: String
     let title: String
-    let body: String
+    let message: String
     let button: (String, () -> Void)?
 
     var body: some View {
@@ -69,7 +69,7 @@ private struct OnboardingPage: View {
                     .font(.headline)
                     .multilineTextAlignment(.center)
 
-                Text(body)
+                Text(message)
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.leading)
