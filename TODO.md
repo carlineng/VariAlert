@@ -52,9 +52,19 @@
 - [x] **Enable GitHub Pages** — live at https://carlineng.github.io/RadAlert/privacy.html
 
 ### Core UX / App Review Requirements
-- [ ] **Onboarding flow** — explain what the app does and what hardware is needed (Garmin Varia) before the user hits the main screen
-- [ ] **Bluetooth permission denial handling** — if user denies Bluetooth, show an actionable message explaining why it's needed and how to enable it in Settings (currently the app silently does nothing)
-- [ ] **HealthKit permission denial handling** — if user denies HealthKit, either gracefully degrade (no workout tracking) or explain why it's required
+- [ ] **Onboarding + permission flow** — 3-page TabView (what it does / what you need / safety notice); "Get Started" triggers BT + HK permission requests; replaces `DisclaimerView`; persisted via `@AppStorage("hasCompletedOnboarding")`
+  - Page 1: app description
+  - Page 2: hardware needed (Garmin Varia) + why Bluetooth and HealthKit are required
+  - Page 3: safety disclaimer + "Get Started" button
+- [ ] **Bluetooth permission denial handling** — `BluetoothDeniedView` (inline in RadAlertApp.swift); shown when `bluetoothState == .unauthorized`; instructs user to enable in iPhone Settings → Privacy & Security → Bluetooth; defer `CBCentralManager` init until "Get Started" so BT prompt fires after onboarding
+- [ ] **HealthKit permission denial handling** — `HealthKitDeniedView` (inline in RadAlertApp.swift); shown when HK status is `.sharingDenied`; instructs user to enable in iPhone Settings → Health → Data Access & Devices
+- [ ] **ContentView routing** — gate on: onboarding complete → BT state known → BT authorized → HK authorized → idle/workout
+- [ ] **Remove `DisclaimerView.swift`** — content absorbed into onboarding page 3; remove from project.pbxproj
+
+#### Implementation details
+- `BluetoothManager`: move `CBCentralManager` init to `initialize()` method; add `@Published var bluetoothState: CBManagerState = .unknown`; add `var isAuthorized: Bool` computed property
+- `WorkoutSessionManager`: extract HK auth request into `requestAuthorization(completion:)`; add `var isHealthKitAuthorized: Bool` (synchronous status check)
+- Simulator path: `initialize()` sets `bluetoothState = .poweredOn` immediately
 
 ### Polish
 - [ ] **App icon** — required for App Store submission
