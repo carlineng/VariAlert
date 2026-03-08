@@ -38,7 +38,7 @@
 - [x] **Rename "Idle State" label** — changed to "RadAlert"
 
 ### Legal & Compliance
-- [x] **In-app disclaimer screen** — `DisclaimerView.swift`; shown on first launch; gated in `ContentView` via `@AppStorage("hasAcknowledgedDisclaimer")`
+- [x] **In-app disclaimer screen** — absorbed into `OnboardingView.swift` page 3; gated via `@AppStorage("hasCompletedOnboarding")`
 - [x] **App Store description disclaimer** — safety/liability text; see Notes below
 - [x] **Privacy policy** — `docs/privacy.html`; served via GitHub Pages at https://carlineng.github.io/RadAlert/privacy.html
 

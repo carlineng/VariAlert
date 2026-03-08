@@ -10,7 +10,7 @@ A standalone Apple Watch app that connects directly to a Garmin Varia radar and 
 - Haptic alerts (4-pulse pattern) when new vehicles are detected
 - Elapsed time and cumulative vehicle count displayed during rides
 - Saves cycling workouts to Apple Health (optional — choose at end of ride)
-- First-launch safety disclaimer with required acknowledgement
+- First-launch onboarding flow with safety acknowledgement and permission setup
 - Fully standalone — works without a companion iPhone app running
 
 ## Requirements
