@@ -30,7 +30,7 @@
 - [ ] **Paid Apple Developer Program membership** ($99/yr) — required to submit to App Store; personal/free team cannot submit
 - [ ] **Remove VariAlertStub iOS target** — the `VariAlertStub/` iOS app is a development workaround to prevent watchOS from orphan-cleaning the watch app (see `VariAlertStub/StubApp.swift` for step-by-step removal instructions); it must be removed before App Store submission as Apple will reject a stub iOS app under guideline 4.2 (Minimum Functionality); removal requires a paid developer account so App Store distribution manages watch app persistence instead
 - [x] **Rename the app and project** — renamed to **RadAlert** (subtitle: "Radar Alerts for Cyclists"); App Store keywords to include: "garmin varia, cycling radar, bike radar, haptic alert"
-- [ ] **Rename GitHub repo** — rename repo `VariAlert` → `RadAlert` on GitHub (Settings → rename); update git remote URL locally after
+- [x] **Rename GitHub repo** — renamed to `RadAlert` on GitHub; local remote URL updated
 
 ### Legal & Compliance
 - [ ] **In-app disclaimer screen** — show on first launch; must make clear the app is a supplement to situational awareness, not a certified safety device; require user acknowledgement before proceeding
