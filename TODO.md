@@ -54,9 +54,9 @@
 - [x] **Rename GitHub repo** — renamed to `RadAlert` on GitHub; local remote URL updated
 
 ### Legal & Compliance
-- [ ] **In-app disclaimer screen** — show on first launch; must make clear the app is a supplement to situational awareness, not a certified safety device; require user acknowledgement before proceeding
-- [ ] **App Store description disclaimer** — safety/liability language in the store listing
-- [ ] **Privacy policy** — required for any app using HealthKit; must be hosted at a public URL and linked in App Store Connect
+- [x] **In-app disclaimer screen** — `DisclaimerView.swift`; shown on first launch via `@AppStorage("hasAcknowledgedDisclaimer")`; gated in `ContentView` before idle/workout views
+- [x] **App Store description disclaimer** — see text below in Notes
+- [x] **Privacy policy** — `docs/privacy.html` in repo; enable GitHub Pages from `docs/` on `main` at https://carlineng.github.io/RadAlert/privacy.html; link this URL in App Store Connect
 
 ### Core UX / App Review Requirements
 - [ ] **Onboarding flow** — explain what the app does and what hardware is needed (Garmin Varia) before the user hits the main screen
@@ -88,3 +88,6 @@
 - Haptic pattern: 4× `.retry` pulses, 0.3s spacing
 - `VariAlertStub` iOS target exists only to satisfy the companion app check and prevent watch app orphan-cleanup during development; see `VariAlertStub/StubApp.swift` for removal instructions
 - `WKCompanionAppBundleIdentifier = com.carlineng.RadAlert` is required by WatchKit installer (bundle ID prefix constraint) and must match the stub's bundle ID; remove both when removing the stub
+
+### App Store Description Disclaimer (paste into App Store Connect description)
+> SAFETY NOTICE: RadAlert is a supplemental awareness tool and is not a certified safety device. It cannot guarantee detection of all vehicles. Always follow traffic laws, remain alert, and rely on your own judgement while riding. The developer assumes no liability for accidents or injuries. Use at your own risk.

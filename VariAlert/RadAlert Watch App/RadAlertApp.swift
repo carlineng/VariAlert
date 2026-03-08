@@ -37,15 +37,20 @@ struct RadAlertApp: App {
 
 struct ContentView: View {
     @EnvironmentObject var appState: WatchAppState
+    @AppStorage("hasAcknowledgedDisclaimer") private var hasAcknowledgedDisclaimer = false
 
     var body: some View {
         NavigationView {
             VStack {
-                switch appState.mode {
-                case .idle:
-                    IdleView()
-                case .workout:
-                    WorkoutView()
+                if !hasAcknowledgedDisclaimer {
+                    DisclaimerView()
+                } else {
+                    switch appState.mode {
+                    case .idle:
+                        IdleView()
+                    case .workout:
+                        WorkoutView()
+                    }
                 }
             }
         }
