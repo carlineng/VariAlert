@@ -14,6 +14,7 @@ struct WorkoutView: View {
     @State private var isPressing = false
     @State private var currentTime = Date()
     @State private var showingThreatAlert = false
+    @State private var showingDisconnectWarning = false
 
     var body: some View {
         VStack(spacing: 16) {
@@ -23,6 +24,13 @@ struct WorkoutView: View {
             Text(radarStatusText)
                 .font(.subheadline)
                 .foregroundColor(radarStatusColor)
+
+            if !bluetoothManager.isConnected && !bluetoothManager.isScanning {
+                Button("Scan Again") {
+                    bluetoothManager.startScanning()
+                }
+                .foregroundColor(.orange)
+            }
 
             Button(action: {}) {
                 Text("Pause Ride")
@@ -47,6 +55,11 @@ struct WorkoutView: View {
                 .stroke(Color.red, lineWidth: 6)
                 .opacity(showingThreatAlert ? 1 : 0)
         )
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(Color.orange, lineWidth: 6)
+                .opacity(showingDisconnectWarning ? 1 : 0)
+        )
         .onAppear {
             startTimeUpdater()
             bluetoothManager.startScanning()
@@ -55,6 +68,14 @@ struct WorkoutView: View {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     withAnimation(.easeOut(duration: 0.5)) {
                         showingThreatAlert = false
+                    }
+                }
+            }
+            bluetoothManager.onRadarDisconnected = {
+                showingDisconnectWarning = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                    withAnimation(.easeOut(duration: 0.5)) {
+                        showingDisconnectWarning = false
                     }
                 }
             }
@@ -70,17 +91,16 @@ struct WorkoutView: View {
     // MARK: - Radar Status
 
     private var radarStatusText: String {
-        if bluetoothManager.isConnected {
-            return "Radar Connected"
-        } else if bluetoothManager.isScanning {
-            return "Scanning..."
-        } else {
-            return "No Radar"
-        }
+        if bluetoothManager.isConnected { return "Radar Connected" }
+        if bluetoothManager.isScanning { return "Scanning..." }
+        if showingDisconnectWarning { return "Radar Lost" }
+        return "No Radar"
     }
 
     private var radarStatusColor: Color {
-        bluetoothManager.isConnected ? .green : .secondary
+        if bluetoothManager.isConnected { return .green }
+        if showingDisconnectWarning { return .orange }
+        return .secondary
     }
 
     // MARK: - Helpers

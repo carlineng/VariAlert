@@ -13,6 +13,15 @@
 - [x] Configure watch as standalone (`WKRunsIndependentlyOfCompanionApp = YES`)
 - [x] Update CLAUDE.md and README
 
+## Completed (Development Experience)
+- [x] **Simulator support** — `BluetoothManager` uses `#if targetEnvironment(simulator)` to simulate radar connection (2s delay), periodic fake threats (every 4s), and an unexpected disconnect (at 20s) without any BLE hardware
+- [x] **Visual threat indicator** — red border flashes on `WorkoutView` when a threat is detected, making haptic events visible in the simulator
+- [x] **Stub iOS companion app** (`VariAlertStub`) — prevents watchOS from orphan-cleaning the watch app during local development; includes step-by-step removal instructions
+
+## Completed (Reliability & Safety UX)
+- [x] **Radar disconnect notification** — unexpected mid-ride disconnect plays `.failure` haptic, flashes orange border, shows "Radar Lost" status, then auto-retries scanning after 2s; explicit "Pause Ride" stop does not trigger the alert
+- [x] **Scan retry** — 15s scan timeout stops a stalled scan; "Scan Again" button appears whenever not connected and not scanning
+
 ---
 
 ## App Store Readiness
@@ -34,8 +43,6 @@
 - [ ] **Rename "Idle State" label** — replace debug-looking UI text with something user-facing (e.g. "Ready" or just the app name)
 
 ### Reliability & Safety UX
-- [ ] **Radar disconnect notification** — if the radar drops mid-ride, alert the user immediately (haptic + UI) rather than silently showing "No Radar"
-- [ ] **Scan retry logic** — if initial scan finds nothing, offer a "Scan Again" button rather than leaving the user on a static "No Radar" state
 - [ ] **Workout metrics** — surface at least basic stats (elapsed time, heart rate) in WorkoutView to justify HealthKit usage to Apple reviewers; purely using HealthKit for background execution without surfacing data is a review risk
 
 ### Polish
