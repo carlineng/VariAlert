@@ -8,7 +8,9 @@ A standalone Apple Watch app that connects directly to a Garmin Varia radar and 
 
 - Connects to Garmin Varia radar via Bluetooth directly from the watch
 - Haptic alerts (4-pulse pattern) when new vehicles are detected
-- Integrates with HealthKit to track cycling workouts
+- Elapsed time and cumulative vehicle count displayed during rides
+- Saves cycling workouts to Apple Health (optional — choose at end of ride)
+- First-launch safety disclaimer with required acknowledgement
 - Fully standalone — works without a companion iPhone app running
 
 ## Requirements
@@ -28,18 +30,23 @@ A standalone Apple Watch app that connects directly to a Garmin Varia radar and 
 
 ## Usage
 
-1. Open the app on your Apple Watch
+1. Open the app on your Apple Watch and acknowledge the safety notice
 2. Tap **Start Ride** — this begins a HealthKit workout session and starts scanning for your Garmin Varia
 3. Once the radar connects, the status shows **Radar Connected**
 4. Ride — the watch will vibrate when vehicles approach from behind
-5. Long-press **Pause Ride** to end the session
+5. Long-press **Stop** to end the session; choose **End and Save** to record the ride to Apple Health, or **End and Discard** to discard it
 
 ## Notes
 
 - Apps signed with a free (personal) Apple Developer account expire after 7 days. A paid Apple Developer Program membership ($99/yr) is required for longer-lived installs.
 - The app requires Bluetooth and HealthKit permissions on first launch.
+- Privacy policy: https://carlineng.github.io/RadAlert/privacy.html
 
 ---
+
+## Safety Disclaimer
+
+RadAlert is a supplemental awareness tool and is **not** a certified safety device. It cannot guarantee detection of all vehicles. Always follow traffic laws, remain alert, and rely on your own judgement while riding. Use at your own risk.
 
 ## Disclaimer
 
@@ -49,9 +56,6 @@ particular purpose, and noninfringement. In no event shall the authors or
 copyright holders be liable for any claim, damages, or other liability, whether
 in an action of contract, tort, or otherwise, arising from, out of, or in
 connection with the software or the use or other dealings in the software.
-
-This project is **not** production-ready. No support, maintenance, or security
-updates are promised. Use at your own risk.
 
 ## Maintenance & Support
 
