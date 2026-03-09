@@ -59,6 +59,13 @@ struct ContentView: View {
                 }
             }
         }
+        .onAppear {
+            // Re-initialize BT on relaunch if onboarding already done.
+            // initialize() is idempotent so it's safe to also call from OnboardingView.
+            if hasCompletedOnboarding {
+                bluetoothManager.initialize()
+            }
+        }
     }
 }
 
