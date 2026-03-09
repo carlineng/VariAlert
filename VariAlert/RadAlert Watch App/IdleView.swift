@@ -33,21 +33,12 @@ struct IdleView: View {
             }
             .font(.headline)
 
-            if bluetoothManager.savedRadar != nil {
-                Button {
-                    showingSettings = true
-                } label: {
-                    Image(systemName: "gear")
-                        .font(.caption)
-                }
-                .foregroundColor(.secondary)
-                .buttonStyle(.plain)
+            Button("Settings") {
+                showingSettings = true
             }
-
-            Link("Privacy Policy",
-                 destination: URL(string: "https://carlineng.github.io/RadAlert/privacy.html")!)
-                .font(.caption2)
-                .foregroundColor(.secondary)
+            .font(.caption2)
+            .foregroundColor(.secondary)
+            .buttonStyle(.plain)
         }
         .padding()
         .sheet(isPresented: $showingSettings) {

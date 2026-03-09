@@ -15,7 +15,7 @@ struct SettingsView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 12) {
-                Text("Radar Settings")
+                Text("Settings")
                     .font(.headline)
 
                 if let saved = bluetoothManager.savedRadar {
@@ -46,6 +46,11 @@ struct SettingsView: View {
                     onDismiss()
                 }
                 .foregroundColor(.red)
+
+                Link("Privacy Policy",
+                     destination: URL(string: "https://carlineng.github.io/RadAlert/privacy.html")!)
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
 
                 Button("Done", action: onDismiss)
                     .foregroundColor(.secondary)
