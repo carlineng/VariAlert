@@ -54,9 +54,9 @@
 
 ### Code Fixes (actionable now)
 
-- [ ] **Remove heart rate read permission** — currently requesting `HKQuantityType(.heartRate)` read access in `WorkoutSessionManager.requestAuthorization()` but not displaying heart rate anywhere in v1; narrows HealthKit scope and avoids reviewer questions about unused permissions
-- [ ] **Add in-app privacy policy link** — Apple requires privacy policy to be accessible from within the app, not just linked in App Store Connect metadata; add a link/button in `IdleView` or onboarding that opens https://carlineng.github.io/RadAlert/privacy.html
-- [ ] **Tone down onboarding safety copy** — "so you can focus on the road ahead" edges toward implying behavioral reliance; replace with more conservative language e.g. "supplemental haptic alerts from your Garmin Varia radar"
+- [x] **Remove heart rate read permission** — `requestAuthorization()` now passes empty `typesToRead` set; only workout sharing is requested
+- [x] **Add in-app privacy policy link** — `Link` in `IdleView` opens https://carlineng.github.io/RadAlert/privacy.html
+- [x] **Tone down onboarding safety copy** — page 1 now reads "Provides supplemental haptic alerts from your Garmin Varia radar when vehicles approach from behind"
 
 ### Polish
 - [ ] **App icon** — required for App Store submission

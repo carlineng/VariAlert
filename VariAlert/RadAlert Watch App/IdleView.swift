@@ -22,6 +22,11 @@ struct IdleView: View {
                 appState.mode = .workout
             }
             .font(.headline)
+
+            Link("Privacy Policy",
+                 destination: URL(string: "https://carlineng.github.io/RadAlert/privacy.html")!)
+                .font(.caption2)
+                .foregroundColor(.secondary)
         }
         .padding()
     }

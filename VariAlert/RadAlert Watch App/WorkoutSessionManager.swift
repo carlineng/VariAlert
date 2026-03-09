@@ -24,7 +24,7 @@ class WorkoutSessionManager: NSObject, ObservableObject {
 
     func requestAuthorization(completion: @escaping (Bool) -> Void) {
         let typesToShare: Set = [HKObjectType.workoutType()]
-        let typesToRead: Set = [HKObjectType.quantityType(forIdentifier: .heartRate)!]
+        let typesToRead: Set<HKObjectType> = []
         healthStore.requestAuthorization(toShare: typesToShare, read: typesToRead) { success, error in
             if let error = error {
                 print("Error requesting HealthKit authorization: \(error.localizedDescription)")

@@ -19,7 +19,7 @@ struct OnboardingView: View {
             OnboardingPage(
                 systemImage: "antenna.radiowaves.left.and.right",
                 title: "RadAlert",
-                message: "Connects to your Garmin Varia radar and vibrates when vehicles approach from behind — so you can focus on the road ahead.",
+                message: "Provides supplemental haptic alerts from your Garmin Varia radar when vehicles approach from behind.",
                 button: nil
             )
             .tag(0)
