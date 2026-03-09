@@ -46,9 +46,32 @@
 
 ## App Store Readiness
 
-### Prerequisites
+### Hard Blockers
+
+- [ ] **Update to watchOS 26 SDK / latest Xcode** — Apple requires watchOS 26 SDK for all uploads after April 28, 2026 (~7 weeks away); submission will be blocked at upload regardless of review; rebuild and re-test BLE + HealthKit flows on shipping OS after update
 - [ ] **Paid Apple Developer Program membership** ($99/yr) — required to submit to App Store; personal/free team cannot submit
-- [ ] **Remove VariAlertStub iOS target** — must be removed before App Store submission (Apple guideline 4.2); removal requires paid account so App Store distribution manages watch app persistence instead; see `VariAlertStub/StubApp.swift` for instructions
+- [ ] **Remove VariAlertStub iOS target** — must be removed before App Store submission (Apple guideline 4.2); also remove `WKCompanionAppBundleIdentifier` from watch target build settings; requires paid account so App Store distribution manages watch app persistence; see `VariAlertStub/StubApp.swift` for instructions
+
+### Code Fixes (actionable now)
+
+- [ ] **Remove heart rate read permission** — currently requesting `HKQuantityType(.heartRate)` read access in `WorkoutSessionManager.requestAuthorization()` but not displaying heart rate anywhere in v1; narrows HealthKit scope and avoids reviewer questions about unused permissions
+- [ ] **Add in-app privacy policy link** — Apple requires privacy policy to be accessible from within the app, not just linked in App Store Connect metadata; add a link/button in `IdleView` or onboarding that opens https://carlineng.github.io/RadAlert/privacy.html
+- [ ] **Tone down onboarding safety copy** — "so you can focus on the road ahead" edges toward implying behavioral reliance; replace with more conservative language e.g. "supplemental haptic alerts from your Garmin Varia radar"
+
+### Polish
+- [ ] **App icon** — required for App Store submission
+- [ ] **Version and build number** — set to `1.0` / `1` in Xcode target General tab before submission
+- [ ] **Screenshot(s)** — App Store requires at least one Apple Watch screenshot
+
+### App Store Connect Setup
+- [ ] Create app record in App Store Connect
+- [ ] Complete App Privacy form — must accurately reflect data practices (workout data written to Health on save; Bluetooth used for radar only; no analytics/ads/external transmission)
+- [ ] Configure HealthKit data types in App Store Connect (required when using HealthKit entitlement)
+- [ ] Write App Store description, keywords, and support URL — keep Garmin Varia references descriptive not promotional; say "Works with supported Garmin Varia radar devices" and list tested models (RTL 515, RTL 516)
+- [ ] Link privacy policy URL (https://carlineng.github.io/RadAlert/privacy.html)
+- [ ] **Write App Review notes** — explain hardware dependency; list exact test path for reviewer without hardware (simulator mode with fake threats); note app is an accessory-style interface for supported radar hardware and is not represented as a safety certification
+
+### GitHub Pages
 - [x] **Enable GitHub Pages** — live at https://carlineng.github.io/RadAlert/privacy.html
 
 ### Core UX / App Review Requirements
@@ -56,18 +79,6 @@
 - [x] **Bluetooth permission denial handling** — `BluetoothDeniedView` (inline in RadAlertApp.swift); shown when `bluetoothState == .unauthorized`; instructs user to enable in iPhone Settings → Privacy & Security → Bluetooth; `CBCentralManager` init deferred to "Get Started"
 - [x] **HealthKit permission denial handling** — `HealthKitDeniedView` (inline in RadAlertApp.swift); shown when HK status is not `.sharingAuthorized`; instructs user to enable in iPhone Settings → Health → Data Access & Devices
 - [x] **ContentView routing** — onboarding → BT unknown (spinner) → BT denied → HK denied → idle/workout
-- [x] **Remove `DisclaimerView.swift`** — deleted; content absorbed into onboarding page 3
-
-### Polish
-- [ ] **App icon** — required for App Store submission
-- [ ] **Version and build number** — set appropriately before submission
-- [ ] **Screenshot(s)** — App Store requires at least one Apple Watch screenshot
-
-### App Store Connect Setup
-- [ ] Create app record in App Store Connect
-- [ ] Configure HealthKit data types in App Store Connect (required when using HealthKit entitlement)
-- [ ] Write App Store description, keywords, and support URL
-- [ ] Link privacy policy URL (https://carlineng.github.io/RadAlert/privacy.html)
 
 ---
 
@@ -83,4 +94,4 @@
 > SAFETY NOTICE: RadAlert is a supplemental awareness tool and is not a certified safety device. It cannot guarantee detection of all vehicles. Always follow traffic laws, remain alert, and rely on your own judgement while riding. The developer assumes no liability for accidents or injuries. Use at your own risk.
 
 ### App Store Keywords
-garmin varia, cycling radar, bike radar, haptic alert, bicycle safety
+cycling radar, bike radar, haptic alert, bicycle safety, garmin varia compatible
