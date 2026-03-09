@@ -13,7 +13,6 @@
 		36FE29EE2D502BA400A5E88E /* RadAlertApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE29ED2D502BA400A5E88E /* RadAlertApp.swift */; };
 		36FE29F22D502BA600A5E88E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 36FE29F12D502BA600A5E88E /* Assets.xcassets */; };
 		36FE29F52D502BA600A5E88E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 36FE29F42D502BA600A5E88E /* Preview Assets.xcassets */; };
-		36FE2A292D51105B00A5E88E /* project_overview.txt in Resources */ = {isa = PBXBuildFile; fileRef = 36FE2A282D51105B00A5E88E /* project_overview.txt */; };
 		36FE2A2B2D51AF9200A5E88E /* WatchAppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE2A2A2D51AF9200A5E88E /* WatchAppState.swift */; };
 		36FE2A2D2D51AFA400A5E88E /* WorkoutSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE2A2C2D51AFA400A5E88E /* WorkoutSessionManager.swift */; };
 		36FE2A2F2D51B0BE00A5E88E /* IdleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE2A2E2D51B0BE00A5E88E /* IdleView.swift */; };
@@ -34,7 +33,6 @@
 		36FE29ED2D502BA400A5E88E /* RadAlertApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadAlertApp.swift; sourceTree = "<group>"; };
 		36FE29F12D502BA600A5E88E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		36FE29F42D502BA600A5E88E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		36FE2A282D51105B00A5E88E /* project_overview.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = project_overview.txt; path = ../project_overview.txt; sourceTree = "<group>"; };
 		36FE2A2A2D51AF9200A5E88E /* WatchAppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAppState.swift; sourceTree = "<group>"; };
 		36FE2A2C2D51AFA400A5E88E /* WorkoutSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSessionManager.swift; sourceTree = "<group>"; };
 		36FE2A2E2D51B0BE00A5E88E /* IdleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdleView.swift; sourceTree = "<group>"; };
@@ -68,8 +66,7 @@
 		36FE29CD2D502B1800A5E88E = {
 			isa = PBXGroup;
 			children = (
-				36FE2A282D51105B00A5E88E /* project_overview.txt */,
-				36FE29EC2D502BA400A5E88E /* RadAlert Watch App */,
+					36FE29EC2D502BA400A5E88E /* RadAlert Watch App */,
 				CE00000D0000000000000DDF /* VariAlertStub */,
 				36FE29D72D502B1800A5E88E /* Products */,
 			);
@@ -201,8 +198,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				36FE2A292D51105B00A5E88E /* project_overview.txt in Resources */,
-				36FE29F52D502BA600A5E88E /* Preview Assets.xcassets in Resources */,
+					36FE29F52D502BA600A5E88E /* Preview Assets.xcassets in Resources */,
 				36FE29F22D502BA600A5E88E /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
