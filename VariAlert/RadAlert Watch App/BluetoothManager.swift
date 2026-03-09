@@ -20,6 +20,8 @@ class BluetoothManager: NSObject, ObservableObject {
     @Published var isConnected: Bool = false
     @Published var vehicleCount: Int = 0
     @Published var bluetoothState: CBManagerState = .unknown
+    @Published var discoveredDevices: [DiscoveredRadar] = []
+    @Published var savedRadar: SavedRadar?
 
     var isAuthorized: Bool {
         bluetoothState != .unauthorized && bluetoothState != .unsupported
@@ -32,14 +34,18 @@ class BluetoothManager: NSObject, ObservableObject {
 
 #if targetEnvironment(simulator)
     private var simulationTimer: Timer?
+    static let simDevice1ID = UUID(uuidString: "11111111-1111-1111-1111-111111111111")!
+    static let simDevice2ID = UUID(uuidString: "22222222-2222-2222-2222-222222222222")!
 #else
     private var centralManager: CBCentralManager?
     private var connectedPeripheral: CBPeripheral?
+    private var discoveredPeripherals: [UUID: CBPeripheral] = [:]
     private var intentionalDisconnect = false
 #endif
 
     override init() {
         super.init()
+        savedRadar = SavedRadar.load()
     }
 
     func initialize() {
@@ -54,22 +60,42 @@ class BluetoothManager: NSObject, ObservableObject {
 
     func startScanning() {
         lastThreatIDs = []
-        vehicleCount = 0
+        discoveredDevices = []
         isScanning = true
         scanTimeoutTimer?.invalidate()
         scanTimeoutTimer = Timer.scheduledTimer(withTimeInterval: scanTimeoutInterval, repeats: false) { [weak self] _ in
             guard let self, self.isScanning else { return }
-            print("Scan timed out — no radar found.")
+            print("Scan timed out — no saved radar found.")
             self.stopScanning()
         }
 #if targetEnvironment(simulator)
         print("[Simulator] Simulating radar scan...")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
             guard let self, self.isScanning else { return }
-            self.stopScanning()
-            self.isConnected = true
-            print("[Simulator] Radar connected.")
-            self.startSimulatingThreats()
+
+            let saved = self.savedRadar
+            let isSaved1 = saved?.peripheralIdentifier == Self.simDevice1ID
+            let isSaved2 = saved?.peripheralIdentifier == Self.simDevice2ID
+
+            let device1 = DiscoveredRadar(id: Self.simDevice1ID, name: "Varia RTL515",
+                                          rssi: -55, identifierSuffix: "A4B2", isSaved: isSaved1)
+            let device2 = DiscoveredRadar(id: Self.simDevice2ID, name: "Varia RTL516",
+                                          rssi: -72, identifierSuffix: "C7D9", isSaved: isSaved2)
+
+            // Saved radar sorts to top
+            self.discoveredDevices = (isSaved2 && !isSaved1) ? [device2, device1] : [device1, device2]
+
+            // Auto-connect if this is the saved radar
+            if isSaved1 || isSaved2 {
+                self.stopScanning()
+                self.isConnected = true
+                print("[Simulator] Saved radar found — auto-connected.")
+                self.startSimulatingThreats()
+            } else {
+                // No saved radar → stop scanning so UI can show selection
+                self.stopScanning()
+                print("[Simulator] No saved radar — showing selection.")
+            }
         }
 #else
         guard let centralManager, centralManager.state == .poweredOn else {
@@ -90,6 +116,43 @@ class BluetoothManager: NSObject, ObservableObject {
         centralManager?.stopScan()
 #endif
         print("Stopped scanning.")
+    }
+
+    func connect(to device: DiscoveredRadar) {
+#if targetEnvironment(simulator)
+        isConnected = true
+        print("[Simulator] Connected to \(device.name).")
+        startSimulatingThreats()
+#else
+        guard let peripheral = discoveredPeripherals[device.id] else {
+            print("Peripheral not found for \(device.name).")
+            return
+        }
+        stopScanning()
+        connectedPeripheral = peripheral
+        centralManager?.connect(peripheral, options: nil)
+#endif
+    }
+
+    func saveRadar(_ device: DiscoveredRadar) {
+        let radar = SavedRadar(
+            peripheralIdentifier: device.id,
+            displayName: device.name,
+            identifierSuffix: device.identifierSuffix,
+            lastConnectedAt: nil
+        )
+        radar.save()
+        savedRadar = radar
+    }
+
+    func saveAndConnect(_ device: DiscoveredRadar) {
+        saveRadar(device)
+        connect(to: device)
+    }
+
+    func forgetSavedRadar() {
+        SavedRadar.delete()
+        savedRadar = nil
     }
 
     func disconnect() {
@@ -173,14 +236,49 @@ extension BluetoothManager: CBCentralManagerDelegate {
                         didDiscover peripheral: CBPeripheral,
                         advertisementData: [String: Any],
                         rssi RSSI: NSNumber) {
-        print("Discovered: \(peripheral.name ?? "Unknown")")
-        stopScanning()
-        connectedPeripheral = peripheral
-        centralManager?.connect(peripheral, options: nil)
+        let uuid = peripheral.identifier
+        guard !discoveredDevices.contains(where: { $0.id == uuid }) else { return }
+
+        let suffix = String(uuid.uuidString.suffix(4))
+        let isSaved = savedRadar?.peripheralIdentifier == uuid
+        let device = DiscoveredRadar(
+            id: uuid,
+            name: peripheral.name ?? "Varia Radar",
+            rssi: RSSI.intValue,
+            identifierSuffix: suffix,
+            isSaved: isSaved
+        )
+        discoveredPeripherals[uuid] = peripheral
+
+        DispatchQueue.main.async {
+            // Saved radar sorts to top
+            if isSaved {
+                self.discoveredDevices.insert(device, at: 0)
+            } else {
+                self.discoveredDevices.append(device)
+            }
+        }
+
+        print("Discovered: \(peripheral.name ?? "Unknown") (\(suffix))")
+
+        // Auto-connect only to the saved radar; wait for others
+        if isSaved {
+            stopScanning()
+            connectedPeripheral = peripheral
+            centralManager.connect(peripheral, options: nil)
+        }
     }
 
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        isConnected = true
+        DispatchQueue.main.async {
+            self.isConnected = true
+            // Update lastConnectedAt for the saved radar
+            if var saved = self.savedRadar, saved.peripheralIdentifier == peripheral.identifier {
+                saved.lastConnectedAt = Date()
+                saved.save()
+                self.savedRadar = saved
+            }
+        }
         print("Connected to: \(peripheral.name ?? "Unknown")")
         peripheral.delegate = self
         peripheral.discoverServices([BluetoothManager.garminServiceUUID])
@@ -198,7 +296,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
                         error: Error?) {
         print("Disconnected from: \(peripheral.name ?? "Unknown")")
         connectedPeripheral = nil
-        isConnected = false
+        DispatchQueue.main.async { self.isConnected = false }
         guard !intentionalDisconnect else {
             intentionalDisconnect = false
             return

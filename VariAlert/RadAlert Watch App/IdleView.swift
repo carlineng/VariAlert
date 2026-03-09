@@ -11,6 +11,10 @@ import SwiftUI
 struct IdleView: View {
     @EnvironmentObject var appState: WatchAppState
     @EnvironmentObject var workoutManager: WorkoutSessionManager
+    @EnvironmentObject var bluetoothManager: BluetoothManager
+
+    @State private var showingSettings = false
+    @State private var showingRadarSelection = false
 
     var body: some View {
         VStack(spacing: 16) {
@@ -18,10 +22,27 @@ struct IdleView: View {
                 .font(.title2)
 
             Button("Start Ride") {
-                workoutManager.startWorkout()
-                appState.mode = .workout
+                if bluetoothManager.savedRadar != nil {
+                    workoutManager.startWorkout()
+                    appState.mode = .workout
+                } else {
+                    bluetoothManager.discoveredDevices = []
+                    bluetoothManager.startScanning()
+                    showingRadarSelection = true
+                }
             }
             .font(.headline)
+
+            if bluetoothManager.savedRadar != nil {
+                Button {
+                    showingSettings = true
+                } label: {
+                    Image(systemName: "gear")
+                        .font(.caption)
+                }
+                .foregroundColor(.secondary)
+                .buttonStyle(.plain)
+            }
 
             Link("Privacy Policy",
                  destination: URL(string: "https://carlineng.github.io/RadAlert/privacy.html")!)
@@ -29,5 +50,23 @@ struct IdleView: View {
                 .foregroundColor(.secondary)
         }
         .padding()
+        .sheet(isPresented: $showingSettings) {
+            SettingsView(onDismiss: { showingSettings = false })
+        }
+        .sheet(isPresented: $showingRadarSelection) {
+            RadarSelectionView(
+                onConnect: { device in
+                    bluetoothManager.saveRadar(device)
+                    bluetoothManager.stopScanning()
+                    showingRadarSelection = false
+                    workoutManager.startWorkout()
+                    appState.mode = .workout
+                },
+                onCancel: {
+                    bluetoothManager.stopScanning()
+                    showingRadarSelection = false
+                }
+            )
+        }
     }
 }

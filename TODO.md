@@ -32,6 +32,16 @@
 - [x] **Vehicle Count** — cumulative session total; resets on new ride
 - [x] **"Long press to stop" hint** — caption label below Stop button
 
+### Radar Device Selection
+- [x] **`SavedRadar` model** — Codable, UserDefaults persistence (`peripheralIdentifier`, `displayName`, `identifierSuffix`, `lastConnectedAt`)
+- [x] **`DiscoveredRadar` struct** — value type with id, name, rssi, identifierSuffix, isSaved
+- [x] **`BluetoothManager` updates** — `@Published var discoveredDevices`, `savedRadar`; collect peripherals on scan; auto-connect only to saved radar; `saveRadar()`, `saveAndConnect()`, `forgetSavedRadar()`, `connect(to:)`
+- [x] **`RadarSelectionView`** — 4 states: scanning / empty / single-confirm / multi-list; Connect + Rescan + Cancel
+- [x] **`SettingsView`** — radar name/ID/last connected; Change Radar + Forget Radar
+- [x] **`IdleView`** — settings gear button when saved radar exists; Start Ride routes through RadarSelectionView if no saved radar
+- [x] **`WorkoutView`** — fallback buttons when scan timed out (Keep Searching / New Radar / Cancel Ride); mid-ride radar swap via RadarSelectionView sheet
+- [x] **Simulator** — simulates 2 discovered devices (Varia RTL515 + RTL516); auto-connects if one matches saved radar
+
 ### App Naming & Branding
 - [x] **Rename app and project** — renamed to **RadAlert** (subtitle: "Radar Alerts for Cyclists")
 - [x] **Rename GitHub repo** — renamed to `RadAlert` on GitHub; local remote URL updated
@@ -43,45 +53,6 @@
 - [x] **Privacy policy** — `docs/privacy.html`; served via GitHub Pages at https://carlineng.github.io/RadAlert/privacy.html
 
 ---
-
-## Radar Device Selection
-
-Currently the app auto-connects to the first discovered Garmin Varia with no user control. This is a problem if multiple radars are in range (group rides, shared equipment), or if the user wants to pair a specific device.
-
-Full spec in `memory/radar-selection-spec.md`.
-
-### Behaviour by case
-1. **One radar, no saved** — single-device confirm screen ("Found: Varia RTL515 · A4") + Connect
-2. **Multiple radars, no saved** — `RadarSelectionView` list; user must explicitly choose
-3. **Saved radar found** — auto-connect silently, no UI interruption
-4. **Saved radar not found** — fallback screen: Keep Searching / Choose Another Radar / Cancel (no "start without radar" — radar required)
-5. **Wrong radar found before saved** — do NOT auto-connect; wait or show fallback
-
-### Connection policy
-- Filter to compatible service UUID only
-- Saved radar always takes priority; never silently switch to a different device
-- Mid-ride disconnect: attempt reconnect to same saved radar only
-
-### Device row display
-- Primary: advertised BLE name (e.g. "Varia RTL515")
-- Secondary: last 4 chars of `CBPeripheral.identifier` + RSSI label (Nearby / Very close / Weak signal)
-- Badges: Saved (sorted to top), Connecting…
-
-### Persistence model (`SavedRadar`)
-Stored in UserDefaults:
-- `peripheralIdentifier: UUID` — `CBPeripheral.identifier`
-- `displayName: String?`
-- `identifierSuffix: String` — last 4 chars, for display
-- `lastConnectedAt: Date?`
-
-### Files affected
-- `BluetoothManager.swift` — collect `@Published var discoveredDevices: [DiscoveredRadar]`; rank saved first; connect only when user confirms or saved radar found
-- New `RadarSelectionView.swift` — scanning / empty / single-confirm / multi-list states; Connect + Rescan + Cancel
-- New `SettingsView.swift` — sheet from IdleView; shows saved radar name/ID/last connected; Change Radar + Forget Radar actions
-- New `SavedRadar.swift` — persistence model
-- `IdleView.swift` — settings button (shown when saved radar exists)
-- `WorkoutView.swift` — fallback sheet when saved radar not found after scan timeout
-- Simulator — simulate 2 discovered devices to exercise picker path
 
 ---
 

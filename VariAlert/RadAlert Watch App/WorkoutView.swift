@@ -17,6 +17,7 @@ struct WorkoutView: View {
     @State private var showingThreatAlert = false
     @State private var showingDisconnectWarning = false
     @State private var showingConfirmation = false
+    @State private var showingRadarSelection = false
 
     var body: some View {
         VStack(spacing: 12) {
@@ -46,10 +47,33 @@ struct WorkoutView: View {
                 .foregroundColor(radarStatusColor)
 
             if !bluetoothManager.isConnected && !bluetoothManager.isScanning {
-                Button("Scan Again") {
-                    bluetoothManager.startScanning()
+                if bluetoothManager.savedRadar != nil {
+                    Button("Keep Searching") {
+                        bluetoothManager.startScanning()
+                    }
+                    .foregroundColor(.orange)
+
+                    Button("New Radar") {
+                        bluetoothManager.discoveredDevices = []
+                        bluetoothManager.startScanning()
+                        showingRadarSelection = true
+                    }
+                    .foregroundColor(.blue)
+
+                    Button("Cancel Ride") {
+                        bluetoothManager.disconnect()
+                        workoutManager.endAndDiscard {
+                            appState.isRadarConnected = false
+                            appState.mode = .idle
+                        }
+                    }
+                    .foregroundColor(.red)
+                } else {
+                    Button("Scan Again") {
+                        bluetoothManager.startScanning()
+                    }
+                    .foregroundColor(.orange)
                 }
-                .foregroundColor(.orange)
             }
 
             VStack(spacing: 4) {
@@ -109,8 +133,21 @@ struct WorkoutView: View {
                 }
             )
         }
+        .sheet(isPresented: $showingRadarSelection) {
+            RadarSelectionView(
+                onConnect: { device in
+                    bluetoothManager.saveAndConnect(device)
+                    showingRadarSelection = false
+                },
+                onCancel: {
+                    bluetoothManager.stopScanning()
+                    showingRadarSelection = false
+                }
+            )
+        }
         .onAppear {
             startElapsedTimer()
+            bluetoothManager.vehicleCount = 0
             bluetoothManager.startScanning()
             bluetoothManager.onNewThreatDetected = {
                 showingThreatAlert = true

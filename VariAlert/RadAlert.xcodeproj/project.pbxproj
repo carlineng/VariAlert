@@ -20,6 +20,9 @@
 		EE11223344556677889900EE /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF11223344556677889900FF /* OnboardingView.swift */; };
 		36FE2A312D51B0E300A5E88E /* WorkoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FE2A302D51B0E300A5E88E /* WorkoutView.swift */; };
 		AA11223344556677889900AA /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB11223344556677889900BB /* BluetoothManager.swift */; };
+		CC22334455667788990011CC /* SavedRadar.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD22334455667788990011DD /* SavedRadar.swift */; };
+		EE22334455667788990011EE /* RadarSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF22334455667788990011FF /* RadarSelectionView.swift */; };
+		AA22334455667788990011AA /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22334455667788990011BB /* SettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +42,9 @@
 		36FE2A302D51B0E300A5E88E /* WorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutView.swift; sourceTree = "<group>"; };
 		36FE2A322D51B36100A5E88E /* RadAlert Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "RadAlert Watch App.entitlements"; sourceTree = "<group>"; };
 		BB11223344556677889900BB /* BluetoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
+		DD22334455667788990011DD /* SavedRadar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedRadar.swift; sourceTree = "<group>"; };
+		FF22334455667788990011FF /* RadarSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadarSelectionView.swift; sourceTree = "<group>"; };
+		BB22334455667788990011BB /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +107,9 @@
 				36FE2A2E2D51B0BE00A5E88E /* IdleView.swift */,
 				36FE2A302D51B0E300A5E88E /* WorkoutView.swift */,
 				FF11223344556677889900FF /* OnboardingView.swift */,
+				DD22334455667788990011DD /* SavedRadar.swift */,
+				FF22334455667788990011FF /* RadarSelectionView.swift */,
+				BB22334455667788990011BB /* SettingsView.swift */,
 			);
 			path = "RadAlert Watch App";
 			sourceTree = "<group>";
@@ -220,6 +229,9 @@
 				36FE2A2D2D51AFA400A5E88E /* WorkoutSessionManager.swift in Sources */,
 				36FE29EE2D502BA400A5E88E /* RadAlertApp.swift in Sources */,
 				EE11223344556677889900EE /* OnboardingView.swift in Sources */,
+				CC22334455667788990011CC /* SavedRadar.swift in Sources */,
+				EE22334455667788990011EE /* RadarSelectionView.swift in Sources */,
+				AA22334455667788990011AA /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
