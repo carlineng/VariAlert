@@ -268,7 +268,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
         if isSaved {
             stopScanning()
             connectedPeripheral = peripheral
-            centralManager.connect(peripheral, options: nil)
+            centralManager?.connect(peripheral, options: nil)
         }
     }
 
