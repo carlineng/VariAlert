@@ -44,6 +44,29 @@
 
 ---
 
+## Radar Device Selection
+
+Currently the app auto-connects to the first discovered Garmin Varia with no user control. This is a problem if multiple radars are in range (group rides, shared equipment), or if the user wants to pair a specific device.
+
+### Planned approach
+- On scan, collect all discovered Garmin Varia devices (name + signal strength) rather than immediately connecting to the first
+- After a short discovery window (e.g. 3s), show a device picker if more than one device is found; auto-connect if only one is found
+- Store the last-connected device identifier (`CBPeripheral.identifier`) in `@AppStorage` and attempt to reconnect to it first on subsequent rides (skip picker if it's in range)
+- "Forget device" option to clear the stored identifier and force re-selection
+
+### Files affected
+- `BluetoothManager.swift` — collect discovered peripherals into an array instead of immediately connecting; add stored preferred device UUID; add `@Published var discoveredDevices: [CBPeripheral]`
+- New `DevicePickerView.swift` — list of discovered devices with name + RSSI; shown from `WorkoutView` when multiple devices found
+- `WorkoutView.swift` — observe `bluetoothManager.discoveredDevices`; show picker sheet when count > 1 and not yet connected
+- Simulator path — simulate discovering 2 devices to exercise the picker
+
+### Open questions before implementing
+- Discovery window duration (3s? 5s? user-dismissible?)
+- How to display device names — Garmin Varia devices often advertise with generic names; may need to show partial UUID or signal strength as the differentiator
+- Whether to show the picker during auto-reconnect attempts or only on first connection
+
+---
+
 ## App Store Readiness
 
 ### Hard Blockers
