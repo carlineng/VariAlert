@@ -176,6 +176,7 @@ struct WorkoutView: View {
             }
         }
         .onDisappear {
+            bluetoothManager.alertsEnabled = true
             elapsedTimer?.invalidate()
             elapsedTimer = nil
             bluetoothManager.disconnect()
