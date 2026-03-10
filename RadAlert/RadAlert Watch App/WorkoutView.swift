@@ -166,6 +166,8 @@ struct WorkoutView: View {
                 }
             }
             workoutManager.onSessionExpired = {
+                showingConfirmation = false
+                bluetoothManager.alertsEnabled = true
                 elapsedTimer?.invalidate()
                 appState.isRadarConnected = false
                 appState.mode = .idle

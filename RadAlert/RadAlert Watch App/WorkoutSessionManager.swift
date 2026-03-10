@@ -92,7 +92,9 @@ class WorkoutSessionManager: NSObject, ObservableObject {
 #else
         guard let session = workoutSession else { completion(); return }
         intentionalEnd = true
-        session.end()
+        if session.state != .ended {
+            session.end()
+        }
         workoutBuilder?.endCollection(withEnd: Date()) { _, error in
             if let error = error {
                 print("Error ending workout collection: \(error.localizedDescription)")
@@ -118,7 +120,9 @@ class WorkoutSessionManager: NSObject, ObservableObject {
 #else
         guard let session = workoutSession else { completion(); return }
         intentionalEnd = true
-        session.end()
+        if session.state != .ended {
+            session.end()
+        }
         workoutBuilder?.endCollection(withEnd: Date()) { _, error in
             if let error = error {
                 print("Error ending workout collection: \(error.localizedDescription)")
