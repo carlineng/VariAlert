@@ -46,7 +46,7 @@ struct WorkoutView: View {
                 .font(.subheadline)
                 .foregroundColor(radarStatusColor)
 
-            if !bluetoothManager.isConnected && !bluetoothManager.isScanning && !bluetoothManager.isConnecting {
+            if bluetoothManager.scanTimedOut && !bluetoothManager.isConnected && !bluetoothManager.isConnecting {
                 if bluetoothManager.savedRadar != nil {
                     Button("Keep Searching") {
                         bluetoothManager.startScanning()

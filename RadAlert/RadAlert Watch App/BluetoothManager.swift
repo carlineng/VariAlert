@@ -19,6 +19,7 @@ class BluetoothManager: NSObject, ObservableObject {
     @Published var isScanning: Bool = false
     @Published var isConnecting: Bool = false
     @Published var isConnected: Bool = false
+    @Published var scanTimedOut: Bool = false
     @Published var vehicleCount: Int = 0
     @Published var bluetoothState: CBManagerState = .unknown
     @Published var discoveredDevices: [DiscoveredRadar] = []
@@ -66,10 +67,12 @@ class BluetoothManager: NSObject, ObservableObject {
         lastThreatIDs = []
         discoveredDevices = []
         isScanning = true
+        scanTimedOut = false
         scanTimeoutTimer?.invalidate()
         scanTimeoutTimer = Timer.scheduledTimer(withTimeInterval: scanTimeoutInterval, repeats: false) { [weak self] _ in
             guard let self, self.isScanning else { return }
             print("Scan timed out — no saved radar found.")
+            self.scanTimedOut = true
             self.stopScanning()
         }
 #if targetEnvironment(simulator)
@@ -97,6 +100,7 @@ class BluetoothManager: NSObject, ObservableObject {
                 self.startSimulatingThreats()
             } else {
                 // No saved radar → stop scanning so UI can show selection
+                self.scanTimedOut = true
                 self.stopScanning()
                 print("[Simulator] No saved radar — showing selection.")
             }
