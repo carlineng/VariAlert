@@ -171,6 +171,7 @@ struct WorkoutView: View {
                 showingConfirmation = false
                 bluetoothManager.alertsEnabled = true
                 elapsedTimer?.invalidate()
+                bluetoothManager.disconnect()
                 appState.isRadarConnected = false
                 appState.mode = .idle
             }
@@ -179,7 +180,6 @@ struct WorkoutView: View {
             bluetoothManager.alertsEnabled = true
             elapsedTimer?.invalidate()
             elapsedTimer = nil
-            bluetoothManager.disconnect()
         }
         .onChange(of: bluetoothManager.isConnected) { connected in
             appState.isRadarConnected = connected
@@ -216,10 +216,18 @@ struct WorkoutView: View {
     }
 
     private func startElapsedTimer() {
-        elapsedSeconds = 0
+        if let workoutStartDate = workoutManager.workoutStartDate {
+            elapsedSeconds = max(0, Int(Date().timeIntervalSince(workoutStartDate)))
+        } else {
+            elapsedSeconds = 0
+        }
         elapsedTimer?.invalidate()
         elapsedTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-            elapsedSeconds += 1
+            if let workoutStartDate = workoutManager.workoutStartDate {
+                elapsedSeconds = max(0, Int(Date().timeIntervalSince(workoutStartDate)))
+            } else {
+                elapsedSeconds += 1
+            }
         }
     }
 }

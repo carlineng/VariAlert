@@ -23,8 +23,10 @@ struct IdleView: View {
 
             Button("Start Ride") {
                 if bluetoothManager.savedRadar != nil {
-                    workoutManager.startWorkout()
-                    appState.mode = .workout
+                    workoutManager.startWorkout { success in
+                        guard success else { return }
+                        appState.mode = .workout
+                    }
                 } else {
                     bluetoothManager.discoveredDevices = []
                     bluetoothManager.startScanning()
@@ -50,8 +52,10 @@ struct IdleView: View {
                     bluetoothManager.saveRadar(device)
                     bluetoothManager.stopScanning()
                     showingRadarSelection = false
-                    workoutManager.startWorkout()
-                    appState.mode = .workout
+                    workoutManager.startWorkout { success in
+                        guard success else { return }
+                        appState.mode = .workout
+                    }
                 },
                 onCancel: {
                     bluetoothManager.stopScanning()

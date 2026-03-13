@@ -33,6 +33,8 @@ class BluetoothManager: NSObject, ObservableObject {
     private var lastThreatIDs: Set<UInt8> = []
     private var scanTimeoutTimer: Timer?
     private let scanTimeoutInterval: TimeInterval = 15.0
+    private let threatHapticCooldown: TimeInterval = 1.0
+    private var lastThreatHapticAt: Date?
     private var isInitialized = false
 
 #if targetEnvironment(simulator)
@@ -174,10 +176,15 @@ class BluetoothManager: NSObject, ObservableObject {
 #if targetEnvironment(simulator)
         simulationTimer?.invalidate()
         simulationTimer = nil
+        isScanning = false
         isConnected = false
         print("[Simulator] Radar disconnected.")
 #else
         intentionalDisconnect = true
+        if isScanning {
+            centralManager?.stopScan()
+            isScanning = false
+        }
         if let peripheral = connectedPeripheral {
             centralManager?.cancelPeripheralConnection(peripheral)
             connectedPeripheral = nil
@@ -213,6 +220,13 @@ class BluetoothManager: NSObject, ObservableObject {
     // MARK: - Private: Haptics
 
     private func playThreatHaptic() {
+        let now = Date()
+        if let lastThreatHapticAt, now.timeIntervalSince(lastThreatHapticAt) < threatHapticCooldown {
+            print("Threat haptic suppressed due to cooldown.")
+            return
+        }
+
+        lastThreatHapticAt = now
         for i in 0..<4 {
             DispatchQueue.main.asyncAfter(deadline: .now() + (0.3 * Double(i))) {
                 WKInterfaceDevice.current().play(.retry)
