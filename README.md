@@ -11,6 +11,7 @@ A standalone Apple Watch app that connects directly to a Garmin Varia radar and 
 - Elapsed time and cumulative vehicle count displayed during rides
 - Saves cycling workouts to Apple Health (optional — choose at end of ride)
 - First-launch onboarding flow with safety acknowledgement and permission setup
+- Prevents overlapping threat haptics during clustered detections
 - Fully standalone — works without a companion iPhone app running
 
 ## Requirements
@@ -22,7 +23,7 @@ A standalone Apple Watch app that connects directly to a Garmin Varia radar and 
 
 ## Getting Started
 
-1. Open `VariAlert/RadAlert.xcodeproj` in Xcode
+1. Open `RadAlert/RadAlert.xcodeproj` in Xcode
 2. Select the `RadAlert Watch App` target
 3. Under **Signing & Capabilities**, set your Development Team
 4. Connect your iPhone via USB and select your Apple Watch as the run destination
@@ -40,6 +41,7 @@ A standalone Apple Watch app that connects directly to a Garmin Varia radar and 
 
 - Apps signed with a free (personal) Apple Developer account expire after 7 days. A paid Apple Developer Program membership ($99/yr) is required for longer-lived installs.
 - The app requires Bluetooth and HealthKit permissions on first launch.
+- The ride screen only appears after the HealthKit workout session has successfully started.
 - Privacy policy: https://carlineng.github.io/RadAlert/privacy.html
 
 ---

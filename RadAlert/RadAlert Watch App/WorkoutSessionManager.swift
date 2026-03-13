@@ -41,22 +41,26 @@ class WorkoutSessionManager: NSObject, ObservableObject {
 #endif
     }
 
-    func startWorkout() {
+    func startWorkout(completion: @escaping (Bool) -> Void) {
 #if targetEnvironment(simulator)
         print("[Simulator] Workout session started.")
-        DispatchQueue.main.async { self.workoutStartDate = Date() }
+        DispatchQueue.main.async {
+            self.workoutStartDate = Date()
+            completion(true)
+        }
 #else
         requestAuthorization { success in
             guard success else {
                 print("HealthKit authorization was not granted.")
+                DispatchQueue.main.async { completion(false) }
                 return
             }
-            self.beginSession()
+            self.beginSession(completion: completion)
         }
 #endif
     }
 
-    private func beginSession() {
+    private func beginSession(completion: @escaping (Bool) -> Void) {
         let configuration = HKWorkoutConfiguration()
         configuration.activityType = .cycling
         configuration.locationType = .outdoor
@@ -73,7 +77,11 @@ class WorkoutSessionManager: NSObject, ObservableObject {
             workoutBuilder?.beginCollection(withStart: startDate) { _, error in
                 if let error = error {
                     print("Error beginning workout collection: \(error.localizedDescription)")
+                    DispatchQueue.main.async { completion(false) }
+                    return
                 }
+
+                DispatchQueue.main.async { completion(true) }
             }
 
             DispatchQueue.main.async {
@@ -82,6 +90,7 @@ class WorkoutSessionManager: NSObject, ObservableObject {
             print("Workout session started.")
         } catch {
             print("Failed to start workout session: \(error.localizedDescription)")
+            DispatchQueue.main.async { completion(false) }
         }
     }
 

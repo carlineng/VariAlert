@@ -21,6 +21,9 @@
 ### Reliability & Safety UX
 - [x] **Radar disconnect notification** — unexpected mid-ride disconnect plays `.failure` haptic, flashes orange border, shows "Radar Lost" status, then auto-retries scanning after 2s; explicit stop does not trigger the alert
 - [x] **Scan retry** — 15s scan timeout stops a stalled scan; "Scan Again" button appears whenever not connected and not scanning
+- [x] **Explicit disconnect cleanup** — ending a ride now stops active BLE scans as well as peripheral connections
+- [x] **Background-safe workout view** — leaving the workout screen no longer automatically disconnects the radar
+- [x] **Threat haptic cooldown** — suppresses overlapping 4-pulse alerts within a 1s cooldown window
 
 ### Workout UX
 - [x] **Long-press → confirmation screen** — Resume / End and Save / End and Discard; visual hierarchy green/secondary/destructive
@@ -28,7 +31,9 @@
 - [x] **End and Discard** — calls `discardWorkout()`; no data saved
 - [x] **Haptic alerts suppressed during confirmation** — `bluetoothManager.alertsEnabled = false` while sheet is shown
 - [x] **Session expiry handling** — `onSessionExpired` callback returns app to idle if watchOS unexpectedly ends the session
+- [x] **Workout start gating** — app only enters workout UI after `HKWorkoutSession` startup succeeds
 - [x] **Elapsed Time stopwatch** — MM:SS (H:MM:SS after 60 min) replaces time-of-day clock
+- [x] **Stable elapsed timer** — ride duration derives from `workoutStartDate` so it survives view recreation
 - [x] **Vehicle Count** — cumulative session total; resets on new ride
 - [x] **"Long press to stop" hint** — caption label below Stop button
 
