@@ -8,6 +8,7 @@ xcuserdata/
 # Build artifacts
 build/
 DerivedData/
+.derivedData/
 *.ipa
 *.dSYM.zip
 *.dSYM
@@ -44,4 +45,3 @@ playground.xcworkspace/
 
 # Generated scheme files
 *.xcscheme
-
