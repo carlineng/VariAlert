@@ -180,6 +180,9 @@ struct WorkoutView: View {
             bluetoothManager.alertsEnabled = true
             elapsedTimer?.invalidate()
             elapsedTimer = nil
+            bluetoothManager.onNewThreatDetected = nil
+            bluetoothManager.onRadarDisconnected = nil
+            workoutManager.onSessionExpired = nil
         }
         .onChange(of: bluetoothManager.isConnected) { connected in
             appState.isRadarConnected = connected

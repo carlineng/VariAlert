@@ -129,6 +129,7 @@ class BluetoothManager: NSObject, ObservableObject {
     }
 
     func connect(to device: DiscoveredRadar) {
+        scanTimedOut = false
         isConnecting = true
 #if targetEnvironment(simulator)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -314,6 +315,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
                         didFailToConnect peripheral: CBPeripheral,
                         error: Error?) {
         print("Failed to connect: \(error?.localizedDescription ?? "unknown error")")
+        intentionalDisconnect = false
         isConnecting = false
         connectedPeripheral = nil
     }
