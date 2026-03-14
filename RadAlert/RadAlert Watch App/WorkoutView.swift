@@ -86,20 +86,18 @@ struct WorkoutView: View {
                 }
             }
 
-            Button(action: {}) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(Color(white: 0.2))
-                    RoundedRectangle(cornerRadius: 10)
-                        .trim(from: 0, to: holdProgress)
-                        .stroke(Color.red, style: StrokeStyle(lineWidth: 3, lineCap: .round))
-                    Text("Stop")
-                        .foregroundColor(.white)
-                }
-                .frame(maxWidth: .infinity)
-                .frame(height: 44)
+            ZStack {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color(white: 0.2))
+                RoundedRectangle(cornerRadius: 10)
+                    .trim(from: 0, to: holdProgress)
+                    .stroke(Color.red, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                Text("Stop")
+                    .foregroundColor(.white)
             }
-            .buttonStyle(.plain)
+            .frame(maxWidth: .infinity)
+            .frame(height: 44)
+            .contentShape(RoundedRectangle(cornerRadius: 10))
             .onLongPressGesture(minimumDuration: 1.0, pressing: { pressing in
                 if pressing {
                     holdTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
@@ -185,6 +183,7 @@ struct WorkoutView: View {
                     withAnimation(.easeOut(duration: 0.5)) {
                         showingDisconnectWarning = false
                     }
+                    bluetoothManager.startScanning()
                 }
             }
             workoutManager.onSessionExpired = {
