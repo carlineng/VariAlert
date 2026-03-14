@@ -76,7 +76,7 @@
 - [x] **Tone down onboarding safety copy** — page 1 now reads "Provides supplemental haptic alerts from your Garmin Varia radar when vehicles approach from behind"
 
 ### Polish
-- [ ] **App icon** — required for App Store submission
+- [x] **App icon** — 1024px watchOS icon in Assets.xcassets
 - [ ] **Version and build number** — set to `1.0` / `1` in Xcode target General tab before submission
 - [ ] **Screenshot(s)** — App Store requires at least one Apple Watch screenshot
 
