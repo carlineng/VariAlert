@@ -174,7 +174,6 @@ struct WorkoutView: View {
                     showingDisconnectWarning = true
                     DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
                         withAnimation(.easeOut(duration: 0.5)) { showingDisconnectWarning = false }
-                        bluetoothManager.startScanning()
                     }
                 },
                 onSessionExpired: {
