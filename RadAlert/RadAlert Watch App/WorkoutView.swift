@@ -11,7 +11,8 @@ struct WorkoutView: View {
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject var workoutManager: WorkoutSessionManager
 
-    @State private var isPressing = false
+    @State private var holdProgress: CGFloat = 0
+    @State private var holdTimer: Timer?
     @State private var elapsedSeconds: Int = 0
     @State private var elapsedTimer: Timer?
     @State private var showingThreatAlert = false
@@ -42,9 +43,18 @@ struct WorkoutView: View {
                 .frame(maxWidth: .infinity)
             }
 
-            Text(radarStatusText)
-                .font(.subheadline)
-                .foregroundColor(radarStatusColor)
+            HStack(spacing: 5) {
+                Circle()
+                    .fill(pillDotColor)
+                    .frame(width: 7, height: 7)
+                Text(radarStatusText)
+                    .font(.caption)
+                    .fontWeight(.medium)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 4)
+            .background(pillDotColor.opacity(0.15))
+            .cornerRadius(20)
 
             if bluetoothManager.scanTimedOut && !bluetoothManager.isConnected && !bluetoothManager.isConnecting {
                 if bluetoothManager.savedRadar != nil {
@@ -76,29 +86,39 @@ struct WorkoutView: View {
                 }
             }
 
-            VStack(spacing: 4) {
-                Button(action: {}) {
+            Button(action: {}) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(Color(white: 0.2))
+                    RoundedRectangle(cornerRadius: 10)
+                        .trim(from: 0, to: holdProgress)
+                        .stroke(Color.red, style: StrokeStyle(lineWidth: 3, lineCap: .round))
                     Text("Stop")
                         .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(isPressing ? Color.red.opacity(0.7) : Color.red)
-                        .cornerRadius(10)
                 }
-                .simultaneousGesture(
-                    LongPressGesture(minimumDuration: 1.0)
-                        .onChanged { _ in isPressing = true }
-                        .onEnded { _ in
-                            isPressing = false
-                            bluetoothManager.alertsEnabled = false
-                            showingConfirmation = true
-                        }
-                )
-
-                Text("Long press to stop")
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
+                .frame(maxWidth: .infinity)
+                .frame(height: 44)
             }
+            .buttonStyle(.plain)
+            .onLongPressGesture(minimumDuration: 1.0, pressing: { pressing in
+                if pressing {
+                    holdTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
+                        holdProgress = min(holdProgress + 0.05, 1.0)
+                    }
+                } else {
+                    holdTimer?.invalidate()
+                    holdTimer = nil
+                    withAnimation(.easeOut(duration: 0.2)) {
+                        holdProgress = 0
+                    }
+                }
+            }, perform: {
+                holdTimer?.invalidate()
+                holdTimer = nil
+                holdProgress = 0
+                bluetoothManager.alertsEnabled = false
+                showingConfirmation = true
+            })
         }
         .padding()
         .overlay(
@@ -192,17 +212,19 @@ struct WorkoutView: View {
     // MARK: - Radar Status
 
     private var radarStatusText: String {
-        if bluetoothManager.isConnected { return "Radar Connected" }
-        if bluetoothManager.isConnecting { return "Connecting..." }
-        if bluetoothManager.isScanning { return "Scanning..." }
-        if showingDisconnectWarning { return "Radar Lost" }
+        if bluetoothManager.isConnected { return "Connected" }
+        if bluetoothManager.isConnecting { return "Connecting" }
+        if bluetoothManager.isScanning { return "Searching" }
+        if showingDisconnectWarning { return "Lost" }
         return "No Radar"
     }
 
-    private var radarStatusColor: Color {
+    private var pillDotColor: Color {
         if bluetoothManager.isConnected { return .green }
-        if showingDisconnectWarning { return .orange }
-        return .secondary
+        if bluetoothManager.isConnecting { return .yellow }
+        if bluetoothManager.isScanning { return .yellow }
+        if showingDisconnectWarning { return .red }
+        return .gray
     }
 
     // MARK: - Elapsed Time

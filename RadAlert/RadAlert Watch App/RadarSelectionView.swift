@@ -77,9 +77,23 @@ struct RadarSelectionView: View {
                     .foregroundColor(.secondary)
                 Text(device.name)
                     .font(.headline)
-                Text("ID ending in \(device.identifierSuffix)")
+                Text("···\(device.identifierSuffix)")
                     .font(.caption2)
                     .foregroundColor(.secondary)
+                Text("\(device.rssi) dBm")
+                    .font(.caption2)
+                    .foregroundColor(rssiColor(device.rssi))
+                if device.isSaved {
+                    if let date = bluetoothManager.savedRadar?.lastConnectedAt {
+                        Text("Last used \(date, format: .dateTime.month(.abbreviated).day())")
+                            .font(.caption2)
+                            .foregroundColor(.blue)
+                    } else {
+                        Text("Saved")
+                            .font(.caption2)
+                            .foregroundColor(.blue)
+                    }
+                }
             }
             .padding(.vertical, 4)
         } else {
@@ -94,14 +108,23 @@ struct RadarSelectionView: View {
                                 Text(device.name)
                                     .font(.caption)
                                 if device.isSaved {
-                                    Text("Saved")
-                                        .font(.caption2)
-                                        .foregroundColor(.blue)
+                                    if let date = bluetoothManager.savedRadar?.lastConnectedAt {
+                                        Text("Last used \(date, format: .dateTime.month(.abbreviated).day())")
+                                            .font(.caption2)
+                                            .foregroundColor(.blue)
+                                    } else {
+                                        Text("Saved")
+                                            .font(.caption2)
+                                            .foregroundColor(.blue)
+                                    }
                                 }
                             }
-                            Text("·\(device.identifierSuffix)")
+                            Text("···\(device.identifierSuffix)")
                                 .font(.caption2)
                                 .foregroundColor(.secondary)
+                            Text("\(device.rssi) dBm")
+                                .font(.caption2)
+                                .foregroundColor(rssiColor(device.rssi))
                         }
                         Spacer()
                         if selectedDevice?.id == device.id {
@@ -111,6 +134,11 @@ struct RadarSelectionView: View {
                         }
                     }
                     .padding(.vertical, 4)
+                    .padding(.horizontal, 6)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(selectedDevice?.id == device.id ? Color.blue.opacity(0.25) : Color.clear)
+                    )
                 }
                 .buttonStyle(.plain)
             }
@@ -119,5 +147,11 @@ struct RadarSelectionView: View {
 
     private var singleDevice: DiscoveredRadar? {
         bluetoothManager.discoveredDevices.count == 1 ? bluetoothManager.discoveredDevices.first : nil
+    }
+
+    private func rssiColor(_ rssi: Int) -> Color {
+        if rssi > -60 { return .green }
+        if rssi > -75 { return .yellow }
+        return .orange
     }
 }

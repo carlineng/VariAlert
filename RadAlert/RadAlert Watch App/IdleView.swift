@@ -17,32 +17,58 @@ struct IdleView: View {
     @State private var showingRadarSelection = false
 
     var body: some View {
-        VStack(spacing: 16) {
-            Text("RadAlert")
-                .font(.title2)
+        ZStack(alignment: .top) {
+            VStack(spacing: 0) {
+                Spacer()
 
-            Button("Start Ride") {
-                if bluetoothManager.savedRadar != nil {
-                    workoutManager.startWorkout { success in
-                        guard success else { return }
-                        appState.mode = .workout
+                VStack(spacing: 8) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "antenna.radiowaves.left.and.right")
+                            .font(.caption)
+                        Text("RadAlert")
+                            .font(.caption)
                     }
-                } else {
-                    bluetoothManager.discoveredDevices = []
-                    bluetoothManager.startScanning()
-                    showingRadarSelection = true
-                }
-            }
-            .font(.headline)
+                    .foregroundColor(.secondary)
 
-            Button("Settings") {
-                showingSettings = true
+                    Spacer().frame(height: 4)
+
+                    Button("Start Ride") {
+                        if bluetoothManager.savedRadar != nil {
+                            workoutManager.startWorkout { success in
+                                guard success else { return }
+                                appState.mode = .workout
+                            }
+                        } else {
+                            bluetoothManager.discoveredDevices = []
+                            bluetoothManager.startScanning()
+                            showingRadarSelection = true
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .font(.headline)
+
+                    if let radar = bluetoothManager.savedRadar {
+                        Text(radar.displayName ?? "Varia Radar")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+                }
+
+                Spacer()
+
+                Button("Radar Settings") {
+                    showingSettings = true
+                }
+                .font(.caption2)
+                .foregroundColor(.secondary)
+                .buttonStyle(.plain)
             }
-            .font(.caption2)
-            .foregroundColor(.secondary)
-            .buttonStyle(.plain)
+            .padding()
+
+            LinearGradient(colors: [.blue, .cyan], startPoint: .leading, endPoint: .trailing)
+                .frame(height: 3)
+                .ignoresSafeArea(edges: .top)
         }
-        .padding()
         .sheet(isPresented: $showingSettings) {
             SettingsView(onDismiss: { showingSettings = false })
         }
