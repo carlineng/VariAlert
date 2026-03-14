@@ -42,6 +42,7 @@ class BluetoothManager: NSObject, ObservableObject {
     private let unexpectedDisconnectRetryDelay: TimeInterval
     private let threatHapticCooldown: TimeInterval = 1.0
     private var scanTimeoutTimer: Timer?
+    private var disconnectRetryTimer: Timer?
     private var isInitialized = false
 
     // Always present so CB delegate methods compile unconditionally
@@ -189,6 +190,8 @@ class BluetoothManager: NSObject, ObservableObject {
     func disconnect() {
         scanTimeoutTimer?.invalidate()
         scanTimeoutTimer = nil
+        disconnectRetryTimer?.invalidate()
+        disconnectRetryTimer = nil
 #if targetEnvironment(simulator)
         simulationTimer?.invalidate()
         simulationTimer = nil
@@ -223,11 +226,7 @@ class BluetoothManager: NSObject, ObservableObject {
             self.simulationTimer?.invalidate()
             self.simulationTimer = nil
             self.isConnected = false
-            self.playDisconnectHaptic()
-            self.onRadarDisconnected?()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
-                self?.startScanning()
-            }
+            self.handleUnexpectedDisconnect()
         }
     }
 #endif
@@ -257,7 +256,10 @@ class BluetoothManager: NSObject, ObservableObject {
     func handleUnexpectedDisconnect() {
         playDisconnectHaptic()
         onRadarDisconnected?()
-        DispatchQueue.main.asyncAfter(deadline: .now() + unexpectedDisconnectRetryDelay) { [weak self] in
+        disconnectRetryTimer?.invalidate()
+        disconnectRetryTimer = Timer.scheduledTimer(withTimeInterval: unexpectedDisconnectRetryDelay,
+                                                    repeats: false) { [weak self] _ in
+            self?.disconnectRetryTimer = nil
             self?.startScanning()
         }
     }
