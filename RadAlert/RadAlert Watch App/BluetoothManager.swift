@@ -6,7 +6,6 @@
 
 import Foundation
 import CoreBluetooth
-import WatchKit
 
 class BluetoothManager: NSObject, ObservableObject {
     static let garminServiceUUID = CBUUID(string: "6A4E3200-667B-11E3-949A-0800200C9A66")
@@ -29,28 +28,44 @@ class BluetoothManager: NSObject, ObservableObject {
         bluetoothState != .unauthorized && bluetoothState != .unsupported
     }
 
+    // MARK: - Dependencies (injectable for testing)
+    let hapticProvider: HapticProviding
+    let radarStore: RadarStoreProviding
+
+    // MARK: - Internal state (internal not private so tests can inspect/set)
+    var lastThreatIDs: Set<UInt8> = []
+    var lastThreatHapticAt: Date?
+    var intentionalDisconnect = false
+
     // MARK: - Private Properties
-    private var lastThreatIDs: Set<UInt8> = []
-    private var scanTimeoutTimer: Timer?
-    private let scanTimeoutInterval: TimeInterval = 15.0
+    private let scanTimeoutInterval: TimeInterval
+    private let unexpectedDisconnectRetryDelay: TimeInterval
     private let threatHapticCooldown: TimeInterval = 1.0
-    private var lastThreatHapticAt: Date?
+    private var scanTimeoutTimer: Timer?
+    private var disconnectRetryTimer: Timer?
     private var isInitialized = false
+
+    // Always present so CB delegate methods compile unconditionally
+    private var centralManager: CBCentralManager?
+    private var connectedPeripheral: CBPeripheral?
+    private var discoveredPeripherals: [UUID: CBPeripheral] = [:]
 
 #if targetEnvironment(simulator)
     private var simulationTimer: Timer?
     static let simDevice1ID = UUID(uuidString: "11111111-1111-1111-1111-111111111111")!
     static let simDevice2ID = UUID(uuidString: "22222222-2222-2222-2222-222222222222")!
-#else
-    private var centralManager: CBCentralManager?
-    private var connectedPeripheral: CBPeripheral?
-    private var discoveredPeripherals: [UUID: CBPeripheral] = [:]
-    private var intentionalDisconnect = false
 #endif
 
-    override init() {
+    init(hapticProvider: HapticProviding = DeviceHapticProvider(),
+         radarStore: RadarStoreProviding = UserDefaultsRadarStore(),
+         scanTimeoutInterval: TimeInterval = 15.0,
+         unexpectedDisconnectRetryDelay: TimeInterval = 2.0) {
+        self.hapticProvider = hapticProvider
+        self.radarStore = radarStore
+        self.scanTimeoutInterval = scanTimeoutInterval
+        self.unexpectedDisconnectRetryDelay = unexpectedDisconnectRetryDelay
         super.init()
-        savedRadar = SavedRadar.load()
+        savedRadar = radarStore.load()
     }
 
     func initialize() {
@@ -91,10 +106,8 @@ class BluetoothManager: NSObject, ObservableObject {
             let device2 = DiscoveredRadar(id: Self.simDevice2ID, name: "Varia RTL516",
                                           rssi: -72, identifierSuffix: "C7D9", isSaved: isSaved2)
 
-            // Saved radar sorts to top
             self.discoveredDevices = (isSaved2 && !isSaved1) ? [device2, device1] : [device1, device2]
 
-            // Auto-connect if this is the saved radar
             if isSaved1 || isSaved2 {
                 self.stopScanning()
                 self.isConnecting = true
@@ -105,7 +118,6 @@ class BluetoothManager: NSObject, ObservableObject {
                     self.startSimulatingThreats()
                 }
             } else {
-                // No saved radar → stop scanning so UI can show selection
                 self.scanTimedOut = true
                 self.stopScanning()
                 print("[Simulator] No saved radar — showing selection.")
@@ -161,7 +173,7 @@ class BluetoothManager: NSObject, ObservableObject {
             identifierSuffix: device.identifierSuffix,
             lastConnectedAt: nil
         )
-        radar.save()
+        radarStore.save(radar)
         savedRadar = radar
     }
 
@@ -171,13 +183,15 @@ class BluetoothManager: NSObject, ObservableObject {
     }
 
     func forgetSavedRadar() {
-        SavedRadar.delete()
+        radarStore.delete()
         savedRadar = nil
     }
 
     func disconnect() {
         scanTimeoutTimer?.invalidate()
         scanTimeoutTimer = nil
+        disconnectRetryTimer?.invalidate()
+        disconnectRetryTimer = nil
 #if targetEnvironment(simulator)
         simulationTimer?.invalidate()
         simulationTimer = nil
@@ -206,21 +220,68 @@ class BluetoothManager: NSObject, ObservableObject {
             self.handleThreats([Threat(id: threatID, distance: 50, speed: 30)])
             threatID = threatID == 255 ? 1 : threatID + 1
         }
-        // Simulate an unexpected disconnect after 20s to exercise the recovery flow
         DispatchQueue.main.asyncAfter(deadline: .now() + 20.0) { [weak self] in
             guard let self, self.isConnected else { return }
             print("[Simulator] Simulating unexpected radar disconnect.")
             self.simulationTimer?.invalidate()
             self.simulationTimer = nil
             self.isConnected = false
-            self.playDisconnectHaptic()
-            self.onRadarDisconnected?()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
-                self?.startScanning()
-            }
+            self.handleUnexpectedDisconnect()
         }
     }
 #endif
+
+    // MARK: - Internal connection event handlers (also called from CB delegates)
+
+    /// Called when a peripheral connects successfully.
+    func handleConnectionSucceeded(peripheralIdentifier: UUID, peripheralName: String?) {
+        isConnecting = false
+        isConnected = true
+        if var saved = savedRadar, saved.peripheralIdentifier == peripheralIdentifier {
+            saved.lastConnectedAt = Date()
+            radarStore.save(saved)
+            savedRadar = saved
+        }
+        print("Connected to: \(peripheralName ?? "Unknown")")
+    }
+
+    /// Called when a connection attempt fails.
+    func handleConnectionFailed() {
+        intentionalDisconnect = false
+        isConnecting = false
+        connectedPeripheral = nil
+    }
+
+    /// Called on an unexpected (non-intentional) disconnect.
+    func handleUnexpectedDisconnect() {
+        playDisconnectHaptic()
+        onRadarDisconnected?()
+        disconnectRetryTimer?.invalidate()
+        disconnectRetryTimer = Timer.scheduledTimer(withTimeInterval: unexpectedDisconnectRetryDelay,
+                                                    repeats: false) { [weak self] _ in
+            self?.disconnectRetryTimer = nil
+            self?.startScanning()
+        }
+    }
+
+    /// Processes a discovered peripheral; extracts the auto-connect logic for testability.
+    func handleDiscoveredPeripheral(uuid: UUID, name: String?, rssi: Int) {
+        guard !discoveredDevices.contains(where: { $0.id == uuid }) else { return }
+        let suffix = String(uuid.uuidString.suffix(4))
+        let isSaved = savedRadar?.peripheralIdentifier == uuid
+        let device = DiscoveredRadar(id: uuid, name: name ?? "Varia Radar", rssi: rssi,
+                                     identifierSuffix: suffix, isSaved: isSaved)
+        if isSaved {
+            discoveredDevices.insert(device, at: 0)
+        } else {
+            discoveredDevices.append(device)
+        }
+        print("Discovered: \(name ?? "Unknown") (\(suffix))")
+        if isSaved {
+            stopScanning()
+            isConnecting = true
+        }
+    }
 
     // MARK: - Private: Haptics
 
@@ -230,99 +291,66 @@ class BluetoothManager: NSObject, ObservableObject {
             print("Threat haptic suppressed due to cooldown.")
             return
         }
-
         lastThreatHapticAt = now
         for i in 0..<4 {
             DispatchQueue.main.asyncAfter(deadline: .now() + (0.3 * Double(i))) {
-                WKInterfaceDevice.current().play(.retry)
+                self.hapticProvider.play(.retry)
             }
         }
     }
 
     private func playDisconnectHaptic() {
-        WKInterfaceDevice.current().play(.failure)
+        hapticProvider.play(.failure)
     }
 }
 
 // MARK: - CBCentralManagerDelegate
+// Extension is always compiled; individual CB calls are guarded internally.
 
-#if !targetEnvironment(simulator)
 extension BluetoothManager: CBCentralManagerDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        DispatchQueue.main.async {
-            self.bluetoothState = central.state
-        }
+#if !targetEnvironment(simulator)
+        DispatchQueue.main.async { self.bluetoothState = central.state }
         switch central.state {
-        case .poweredOn:
-            print("Bluetooth powered on.")
-        case .poweredOff:
-            print("Bluetooth powered off.")
-        case .unauthorized:
-            print("Bluetooth unauthorized.")
-        default:
-            print("Bluetooth state: \(central.state.rawValue)")
+        case .poweredOn: print("Bluetooth powered on.")
+        case .poweredOff: print("Bluetooth powered off.")
+        case .unauthorized: print("Bluetooth unauthorized.")
+        default: print("Bluetooth state: \(central.state.rawValue)")
         }
+#endif
     }
 
     func centralManager(_ central: CBCentralManager,
                         didDiscover peripheral: CBPeripheral,
                         advertisementData: [String: Any],
                         rssi RSSI: NSNumber) {
+#if !targetEnvironment(simulator)
         let uuid = peripheral.identifier
-        guard !discoveredDevices.contains(where: { $0.id == uuid }) else { return }
-
-        let suffix = String(uuid.uuidString.suffix(4))
-        let isSaved = savedRadar?.peripheralIdentifier == uuid
-        let device = DiscoveredRadar(
-            id: uuid,
-            name: peripheral.name ?? "Varia Radar",
-            rssi: RSSI.intValue,
-            identifierSuffix: suffix,
-            isSaved: isSaved
-        )
         discoveredPeripherals[uuid] = peripheral
-
-        // Already on main queue (CBCentralManager initialized with queue: nil)
-        if isSaved {
-            discoveredDevices.insert(device, at: 0)
-        } else {
-            discoveredDevices.append(device)
-        }
-
-        print("Discovered: \(peripheral.name ?? "Unknown") (\(suffix))")
-
-        // Auto-connect only to the saved radar; wait for others
-        if isSaved {
-            stopScanning()
-            isConnecting = true
+        handleDiscoveredPeripheral(uuid: uuid, name: peripheral.name, rssi: RSSI.intValue)
+        if savedRadar?.peripheralIdentifier == uuid {
             connectedPeripheral = peripheral
             centralManager?.connect(peripheral, options: nil)
         }
+#endif
     }
 
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         DispatchQueue.main.async {
-            self.isConnecting = false
-            self.isConnected = true
-            // Update lastConnectedAt for the saved radar
-            if var saved = self.savedRadar, saved.peripheralIdentifier == peripheral.identifier {
-                saved.lastConnectedAt = Date()
-                saved.save()
-                self.savedRadar = saved
-            }
+            self.handleConnectionSucceeded(peripheralIdentifier: peripheral.identifier,
+                                           peripheralName: peripheral.name)
         }
-        print("Connected to: \(peripheral.name ?? "Unknown")")
+#if !targetEnvironment(simulator)
         peripheral.delegate = self
         peripheral.discoverServices([BluetoothManager.garminServiceUUID])
+#endif
     }
 
     func centralManager(_ central: CBCentralManager,
                         didFailToConnect peripheral: CBPeripheral,
                         error: Error?) {
         print("Failed to connect: \(error?.localizedDescription ?? "unknown error")")
-        intentionalDisconnect = false
-        isConnecting = false
-        connectedPeripheral = nil
+        handleConnectionFailed()
     }
 
     func centralManager(_ central: CBCentralManager,
@@ -330,17 +358,14 @@ extension BluetoothManager: CBCentralManagerDelegate {
                         error: Error?) {
         print("Disconnected from: \(peripheral.name ?? "Unknown")")
         connectedPeripheral = nil
-        DispatchQueue.main.async { self.isConnected = false }
-        guard !intentionalDisconnect else {
-            intentionalDisconnect = false
-            return
-        }
+        let wasIntentional = intentionalDisconnect
         intentionalDisconnect = false
-        print("Unexpected disconnect — alerting and retrying.")
-        playDisconnectHaptic()
-        onRadarDisconnected?()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
-            self?.startScanning()
+        DispatchQueue.main.async { self.isConnected = false }
+        if wasIntentional {
+            print("Intentional disconnect — no retry.")
+        } else {
+            print("Unexpected disconnect — alerting and retrying.")
+            handleUnexpectedDisconnect()
         }
     }
 }
@@ -349,6 +374,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
 
 extension BluetoothManager: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+#if !targetEnvironment(simulator)
         if let error = error {
             print("Error discovering services: \(error.localizedDescription)")
             return
@@ -357,11 +383,13 @@ extension BluetoothManager: CBPeripheralDelegate {
         for service in services where service.uuid == BluetoothManager.garminServiceUUID {
             peripheral.discoverCharacteristics(nil, for: service)
         }
+#endif
     }
 
     func peripheral(_ peripheral: CBPeripheral,
                     didDiscoverCharacteristicsFor service: CBService,
                     error: Error?) {
+#if !targetEnvironment(simulator)
         if let error = error {
             print("Error discovering characteristics: \(error.localizedDescription)")
             return
@@ -374,23 +402,24 @@ extension BluetoothManager: CBPeripheralDelegate {
                 peripheral.readValue(for: characteristic)
             }
         }
+#endif
     }
 
     func peripheral(_ peripheral: CBPeripheral,
                     didUpdateValueFor characteristic: CBCharacteristic,
                     error: Error?) {
+#if !targetEnvironment(simulator)
         if let error = error {
             print("Error reading characteristic: \(error.localizedDescription)")
             return
         }
         guard let data = characteristic.value else { return }
-
         if let threats = parseRadarData(data) {
             handleThreats(threats)
         }
+#endif
     }
 }
-#endif
 
 // MARK: - Threat Handling
 
@@ -415,7 +444,7 @@ extension BluetoothManager {
 // MARK: - Radar Data Parsing
 
 /// Represents a detected vehicle threat from the Garmin Varia radar.
-struct Threat {
+struct Threat: Equatable {
     let id: UInt8
     let distance: UInt8
     let speed: UInt8

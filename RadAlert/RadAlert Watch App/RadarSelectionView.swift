@@ -146,12 +146,18 @@ struct RadarSelectionView: View {
     }
 
     private var singleDevice: DiscoveredRadar? {
-        bluetoothManager.discoveredDevices.count == 1 ? bluetoothManager.discoveredDevices.first : nil
+        RadarSelectionView.singleDevice(from: bluetoothManager.discoveredDevices)
     }
 
-    private func rssiColor(_ rssi: Int) -> Color {
-        if rssi > -60 { return .green }
-        if rssi > -75 { return .yellow }
-        return .orange
+    // Static so tests can call without instantiating a view
+    static func singleDevice(from devices: [DiscoveredRadar]) -> DiscoveredRadar? {
+        devices.count == 1 ? devices.first : nil
     }
+}
+
+// Top-level so tests can import without a view host
+func rssiColor(_ rssi: Int) -> Color {
+    if rssi > -60 { return .green }
+    if rssi > -75 { return .yellow }
+    return .orange
 }

@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A100000000000000000000B1 /* HapticProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000000000000000000A1 /* HapticProviding.swift */; };
+		A100000000000000000000B2 /* RadarStoreProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000000000000000000A2 /* RadarStoreProviding.swift */; };
+		A100000000000000000000B3 /* HealthStoreProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000000000000000000A3 /* HealthStoreProviding.swift */; };
+		A200000000000000000000B1 /* BluetoothManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000000000000000000A1 /* BluetoothManagerTests.swift */; };
+		A200000000000000000000B2 /* WorkoutSessionManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000000000000000000A2 /* WorkoutSessionManagerTests.swift */; };
+		A200000000000000000000B3 /* SavedRadarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000000000000000000A3 /* SavedRadarTests.swift */; };
+		A200000000000000000000B4 /* RadarDataParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000000000000000000A4 /* RadarDataParsingTests.swift */; };
+		A200000000000000000000B5 /* RadarSelectionLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000000000000000000A5 /* RadarSelectionLogicTests.swift */; };
+		A200000000000000000000B6 /* WorkoutViewLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000000000000000000A6 /* WorkoutViewLogicTests.swift */; };
+		A200000000000000000000B7 /* Mocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000000000000000000A7 /* Mocks.swift */; };
 		CE000004000000000000004F /* StubApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE000001000000000000001F /* StubApp.swift */; };
 		CE000005000000000000005F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE000002000000000000002F /* ContentView.swift */; };
 		367342A92D5B179B00E4CF04 /* HapticTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367342A82D5B179B00E4CF04 /* HapticTestView.swift */; };
@@ -25,6 +35,17 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A100000000000000000000A1 /* HapticProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticProviding.swift; sourceTree = "<group>"; };
+		A100000000000000000000A2 /* RadarStoreProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadarStoreProviding.swift; sourceTree = "<group>"; };
+		A100000000000000000000A3 /* HealthStoreProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthStoreProviding.swift; sourceTree = "<group>"; };
+		A200000000000000000000AF /* RadAlert Watch App Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "RadAlert Watch App Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A200000000000000000000A1 /* BluetoothManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothManagerTests.swift; sourceTree = "<group>"; };
+		A200000000000000000000A2 /* WorkoutSessionManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSessionManagerTests.swift; sourceTree = "<group>"; };
+		A200000000000000000000A3 /* SavedRadarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedRadarTests.swift; sourceTree = "<group>"; };
+		A200000000000000000000A4 /* RadarDataParsingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadarDataParsingTests.swift; sourceTree = "<group>"; };
+		A200000000000000000000A5 /* RadarSelectionLogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadarSelectionLogicTests.swift; sourceTree = "<group>"; };
+		A200000000000000000000A6 /* WorkoutViewLogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutViewLogicTests.swift; sourceTree = "<group>"; };
+		A200000000000000000000A7 /* Mocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mocks.swift; sourceTree = "<group>"; };
 		CE000001000000000000001F /* StubApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StubApp.swift; sourceTree = "<group>"; };
 		CE000002000000000000002F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		CE000003000000000000003F /* VariAlertStub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VariAlertStub.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -60,6 +81,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A20000000000000000000033 /* Frameworks (Tests) */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -67,6 +95,7 @@
 			isa = PBXGroup;
 			children = (
 					36FE29EC2D502BA400A5E88E /* RadAlert Watch App */,
+				A20000000000000000000011 /* RadAlertTests */,
 				CE00000D0000000000000DDF /* VariAlertStub */,
 				36FE29D72D502B1800A5E88E /* Products */,
 			);
@@ -86,6 +115,7 @@
 			children = (
 				36FE29EB2D502BA400A5E88E /* RadAlert Watch App.app */,
 				CE000003000000000000003F /* VariAlertStub.app */,
+				A200000000000000000000AF /* RadAlert Watch App Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -98,6 +128,9 @@
 				36FE2A2C2D51AFA400A5E88E /* WorkoutSessionManager.swift */,
 				36FE29ED2D502BA400A5E88E /* RadAlertApp.swift */,
 				BB11223344556677889900BB /* BluetoothManager.swift */,
+				A100000000000000000000A1 /* HapticProviding.swift */,
+				A100000000000000000000A2 /* RadarStoreProviding.swift */,
+				A100000000000000000000A3 /* HealthStoreProviding.swift */,
 				367342A82D5B179B00E4CF04 /* HapticTestView.swift */,
 				36FE29F12D502BA600A5E88E /* Assets.xcassets */,
 				36FE29F32D502BA600A5E88E /* Preview Content */,
@@ -109,6 +142,20 @@
 				BB22334455667788990011BB /* SettingsView.swift */,
 			);
 			path = "RadAlert Watch App";
+			sourceTree = "<group>";
+		};
+		A20000000000000000000011 /* RadAlertTests */ = {
+			isa = PBXGroup;
+			children = (
+				A200000000000000000000A1 /* BluetoothManagerTests.swift */,
+				A200000000000000000000A2 /* WorkoutSessionManagerTests.swift */,
+				A200000000000000000000A3 /* SavedRadarTests.swift */,
+				A200000000000000000000A4 /* RadarDataParsingTests.swift */,
+				A200000000000000000000A5 /* RadarSelectionLogicTests.swift */,
+				A200000000000000000000A6 /* WorkoutViewLogicTests.swift */,
+				A200000000000000000000A7 /* Mocks.swift */,
+			);
+			path = RadAlertTests;
 			sourceTree = "<group>";
 		};
 		36FE29F32D502BA600A5E88E /* Preview Content */ = {
@@ -156,6 +203,23 @@
 			productReference = CE000003000000000000003F /* VariAlertStub.app */;
 			productType = "com.apple.product-type.application";
 		};
+		A20000000000000000000044 /* RadAlert Watch App Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A20000000000000000000077 /* Build configuration list for PBXNativeTarget "RadAlert Watch App Tests" */;
+			buildPhases = (
+				A20000000000000000000022 /* Sources */,
+				A20000000000000000000033 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A200000000000000000000AA /* PBXTargetDependency */,
+			);
+			name = "RadAlert Watch App Tests";
+			productName = "RadAlert Watch App Tests";
+			productReference = A200000000000000000000AF /* RadAlert Watch App Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -171,6 +235,10 @@
 					};
 					CE000009000000000000009F = {
 						CreatedOnToolsVersion = 15.4;
+					};
+					A20000000000000000000044 = {
+						CreatedOnToolsVersion = 15.4;
+						TestTargetID = 36FE29EA2D502BA400A5E88E;
 					};
 				};
 			};
@@ -189,6 +257,7 @@
 			targets = (
 				36FE29EA2D502BA400A5E88E /* RadAlert Watch App */,
 				CE000009000000000000009F /* VariAlertStub */,
+				A20000000000000000000044 /* RadAlert Watch App Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -217,6 +286,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A100000000000000000000B1 /* HapticProviding.swift in Sources */,
+				A100000000000000000000B2 /* RadarStoreProviding.swift in Sources */,
+				A100000000000000000000B3 /* HealthStoreProviding.swift in Sources */,
 				36FE2A2B2D51AF9200A5E88E /* WatchAppState.swift in Sources */,
 				36FE2A312D51B0E300A5E88E /* WorkoutView.swift in Sources */,
 				367342A92D5B179B00E4CF04 /* HapticTestView.swift in Sources */,
@@ -240,7 +312,39 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A20000000000000000000022 /* Sources (Tests) */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A200000000000000000000B1 /* BluetoothManagerTests.swift in Sources */,
+				A200000000000000000000B2 /* WorkoutSessionManagerTests.swift in Sources */,
+				A200000000000000000000B3 /* SavedRadarTests.swift in Sources */,
+				A200000000000000000000B4 /* RadarDataParsingTests.swift in Sources */,
+				A200000000000000000000B5 /* RadarSelectionLogicTests.swift in Sources */,
+				A200000000000000000000B6 /* WorkoutViewLogicTests.swift in Sources */,
+				A200000000000000000000B7 /* Mocks.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXContainerItemProxy section */
+		A20000000000000000000088 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 36FE29CE2D502B1800A5E88E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 36FE29EA2D502BA400A5E88E;
+			remoteInfo = "RadAlert Watch App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXTargetDependency section */
+		A200000000000000000000AA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 36FE29EA2D502BA400A5E88E /* RadAlert Watch App */;
+			targetProxy = A20000000000000000000088 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		36FE29E22D502B1900A5E88E /* Debug */ = {
@@ -482,6 +586,46 @@
 			};
 			name = Release;
 		};
+		A20000000000000000000055 /* Debug (Tests) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 82Z3449U28;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.carlineng.RadAlert.watchkitapp.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RadAlert Watch App.app/RadAlert Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 10.5;
+			};
+			name = Debug;
+		};
+		A20000000000000000000066 /* Release (Tests) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 82Z3449U28;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.carlineng.RadAlert.watchkitapp.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RadAlert Watch App.app/RadAlert Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 10.5;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -508,6 +652,15 @@
 			buildConfigurations = (
 				CE00000A0000000000000AAF /* Debug */,
 				CE00000B0000000000000BBF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A20000000000000000000077 /* Build configuration list for PBXNativeTarget "RadAlert Watch App Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A20000000000000000000055 /* Debug */,
+				A20000000000000000000066 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

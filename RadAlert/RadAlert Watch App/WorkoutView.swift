@@ -11,8 +11,7 @@ struct WorkoutView: View {
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject var workoutManager: WorkoutSessionManager
 
-    @State private var holdProgress: CGFloat = 0
-    @State private var holdTimer: Timer?
+    @StateObject private var coordinator = WorkoutCoordinator()
     @State private var elapsedSeconds: Int = 0
     @State private var elapsedTimer: Timer?
     @State private var showingThreatAlert = false
@@ -25,7 +24,7 @@ struct WorkoutView: View {
             // Metrics row
             HStack(spacing: 16) {
                 VStack(spacing: 2) {
-                    Text(elapsedFormatted)
+                    Text(formatElapsed(elapsedSeconds))
                         .font(.title2.monospacedDigit())
                     Text("Elapsed")
                         .font(.caption2)
@@ -45,15 +44,15 @@ struct WorkoutView: View {
 
             HStack(spacing: 5) {
                 Circle()
-                    .fill(pillDotColor)
+                    .fill(pillState.dotColor)
                     .frame(width: 7, height: 7)
-                Text(radarStatusText)
+                Text(pillState.text)
                     .font(.caption)
                     .fontWeight(.medium)
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 4)
-            .background(pillDotColor.opacity(0.15))
+            .background(pillState.dotColor.opacity(0.15))
             .cornerRadius(20)
 
             if bluetoothManager.scanTimedOut && !bluetoothManager.isConnected && !bluetoothManager.isConnecting {
@@ -90,7 +89,7 @@ struct WorkoutView: View {
                 RoundedRectangle(cornerRadius: 10)
                     .fill(Color(white: 0.2))
                 RoundedRectangle(cornerRadius: 10)
-                    .trim(from: 0, to: holdProgress)
+                    .trim(from: 0, to: coordinator.holdProgress)
                     .stroke(Color.red, style: StrokeStyle(lineWidth: 3, lineCap: .round))
                 Text("Stop")
                     .foregroundColor(.white)
@@ -100,21 +99,14 @@ struct WorkoutView: View {
             .contentShape(RoundedRectangle(cornerRadius: 10))
             .onLongPressGesture(minimumDuration: 1.0, pressing: { pressing in
                 if pressing {
-                    holdTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
-                        holdProgress = min(holdProgress + 0.05, 1.0)
-                    }
+                    coordinator.startHold()
                 } else {
-                    holdTimer?.invalidate()
-                    holdTimer = nil
                     withAnimation(.easeOut(duration: 0.2)) {
-                        holdProgress = 0
+                        coordinator.cancelHold()
                     }
                 }
             }, perform: {
-                holdTimer?.invalidate()
-                holdTimer = nil
-                holdProgress = 0
-                bluetoothManager.alertsEnabled = false
+                coordinator.completeHold(bluetoothManager: bluetoothManager)
                 showingConfirmation = true
             })
         }
@@ -169,42 +161,36 @@ struct WorkoutView: View {
             startElapsedTimer()
             bluetoothManager.vehicleCount = 0
             bluetoothManager.startScanning()
-            bluetoothManager.onNewThreatDetected = {
-                showingThreatAlert = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                    withAnimation(.easeOut(duration: 0.5)) {
-                        showingThreatAlert = false
+            coordinator.register(
+                bluetoothManager: bluetoothManager,
+                workoutManager: workoutManager,
+                onThreatDetected: {
+                    showingThreatAlert = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                        withAnimation(.easeOut(duration: 0.5)) { showingThreatAlert = false }
                     }
-                }
-            }
-            bluetoothManager.onRadarDisconnected = {
-                showingDisconnectWarning = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                    withAnimation(.easeOut(duration: 0.5)) {
-                        showingDisconnectWarning = false
+                },
+                onDisconnected: {
+                    showingDisconnectWarning = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                        withAnimation(.easeOut(duration: 0.5)) { showingDisconnectWarning = false }
                     }
-                    bluetoothManager.startScanning()
+                },
+                onSessionExpired: {
+                    showingConfirmation = false
+                    bluetoothManager.alertsEnabled = true
+                    elapsedTimer?.invalidate()
+                    bluetoothManager.disconnect()
+                    appState.isRadarConnected = false
+                    appState.mode = .idle
                 }
-            }
-            workoutManager.onSessionExpired = {
-                showingConfirmation = false
-                bluetoothManager.alertsEnabled = true
-                elapsedTimer?.invalidate()
-                bluetoothManager.disconnect()
-                appState.isRadarConnected = false
-                appState.mode = .idle
-            }
+            )
         }
         .onDisappear {
             bluetoothManager.alertsEnabled = true
             elapsedTimer?.invalidate()
             elapsedTimer = nil
-            holdTimer?.invalidate()
-            holdTimer = nil
-            holdProgress = 0
-            bluetoothManager.onNewThreatDetected = nil
-            bluetoothManager.onRadarDisconnected = nil
-            workoutManager.onSessionExpired = nil
+            coordinator.teardown(bluetoothManager: bluetoothManager, workoutManager: workoutManager)
         }
         .onChange(of: bluetoothManager.isConnected) { connected in
             appState.isRadarConnected = connected
@@ -213,33 +199,13 @@ struct WorkoutView: View {
 
     // MARK: - Radar Status
 
-    private var radarStatusText: String {
-        if bluetoothManager.isConnected { return "Connected" }
-        if bluetoothManager.isConnecting { return "Connecting" }
-        if bluetoothManager.isScanning { return "Searching" }
-        if showingDisconnectWarning { return "Lost" }
-        return "No Radar"
-    }
-
-    private var pillDotColor: Color {
-        if bluetoothManager.isConnected { return .green }
-        if bluetoothManager.isConnecting { return .yellow }
-        if bluetoothManager.isScanning { return .yellow }
-        if showingDisconnectWarning { return .red }
-        return .gray
-    }
-
-    // MARK: - Elapsed Time
-
-    private var elapsedFormatted: String {
-        let h = elapsedSeconds / 3600
-        let m = (elapsedSeconds % 3600) / 60
-        let s = elapsedSeconds % 60
-        if h > 0 {
-            return String(format: "%d:%02d:%02d", h, m, s)
-        } else {
-            return String(format: "%02d:%02d", m, s)
-        }
+    private var pillState: RadarPillState {
+        RadarPillState(
+            isConnected: bluetoothManager.isConnected,
+            isConnecting: bluetoothManager.isConnecting,
+            isScanning: bluetoothManager.isScanning,
+            isDisconnectWarning: showingDisconnectWarning
+        )
     }
 
     private func startElapsedTimer() {
@@ -287,5 +253,87 @@ private struct EndRideSheet: View {
             }
         }
         .padding()
+    }
+}
+
+// MARK: - WorkoutCoordinator
+
+/// Owns the hold-to-stop mechanic and workout callback lifecycle.
+/// Extracted as an ObservableObject so it can be tested independently of SwiftUI.
+class WorkoutCoordinator: ObservableObject {
+    @Published private(set) var holdProgress: CGFloat = 0
+    private var holdTimer: Timer?
+    var onHoldComplete: (() -> Void)?
+
+    func startHold() {
+        holdTimer?.invalidate()
+        holdTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] _ in
+            guard let self else { return }
+            holdProgress = min(holdProgress + 0.05, 1.0)
+        }
+    }
+
+    func cancelHold() {
+        holdTimer?.invalidate()
+        holdTimer = nil
+        holdProgress = 0
+    }
+
+    func completeHold(bluetoothManager: BluetoothManager) {
+        holdTimer?.invalidate()
+        holdTimer = nil
+        holdProgress = 0
+        bluetoothManager.alertsEnabled = false
+        onHoldComplete?()
+    }
+
+    func register(bluetoothManager: BluetoothManager,
+                  workoutManager: WorkoutSessionManager,
+                  onThreatDetected: @escaping () -> Void,
+                  onDisconnected: @escaping () -> Void,
+                  onSessionExpired: @escaping () -> Void) {
+        bluetoothManager.onNewThreatDetected = onThreatDetected
+        bluetoothManager.onRadarDisconnected = onDisconnected
+        workoutManager.onSessionExpired = onSessionExpired
+    }
+
+    func teardown(bluetoothManager: BluetoothManager, workoutManager: WorkoutSessionManager) {
+        cancelHold()
+        bluetoothManager.onNewThreatDetected = nil
+        bluetoothManager.onRadarDisconnected = nil
+        workoutManager.onSessionExpired = nil
+    }
+}
+
+// MARK: - Testable helpers
+
+/// Formats elapsed seconds as M:SS or H:MM:SS.
+func formatElapsed(_ seconds: Int) -> String {
+    let h = seconds / 3600
+    let m = (seconds % 3600) / 60
+    let s = seconds % 60
+    return h > 0 ? String(format: "%d:%02d:%02d", h, m, s) : String(format: "%02d:%02d", m, s)
+}
+
+/// Encapsulates radar connection state for the status pill.
+struct RadarPillState {
+    let isConnected: Bool
+    let isConnecting: Bool
+    let isScanning: Bool
+    let isDisconnectWarning: Bool
+
+    var text: String {
+        if isConnected { return "Connected" }
+        if isConnecting { return "Connecting" }
+        if isScanning { return "Searching" }
+        if isDisconnectWarning { return "Lost" }
+        return "No Radar"
+    }
+
+    var dotColor: Color {
+        if isConnected { return .green }
+        if isConnecting || isScanning { return .yellow }
+        if isDisconnectWarning { return .red }
+        return .gray
     }
 }

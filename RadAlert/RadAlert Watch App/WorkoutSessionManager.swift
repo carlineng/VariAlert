@@ -10,10 +10,11 @@ import HealthKit
 import SwiftUI
 
 class WorkoutSessionManager: NSObject, ObservableObject {
-    private let healthStore = HKHealthStore()
+    private let store: HealthStoreProviding
     private var workoutSession: HKWorkoutSession?
     private var workoutBuilder: HKLiveWorkoutBuilder?
-    private var intentionalEnd = false
+    // internal (not private) so tests can set it directly
+    var intentionalEnd = false
 
     @Published var workoutStartDate: Date?
     var onSessionExpired: (() -> Void)?
@@ -22,23 +23,24 @@ class WorkoutSessionManager: NSObject, ObservableObject {
 #if targetEnvironment(simulator)
         return true
 #else
-        return healthStore.authorizationStatus(for: HKObjectType.workoutType()) == .sharingAuthorized
+        return store.authorizationStatus(for: HKObjectType.workoutType()) == .sharingAuthorized
 #endif
     }
 
+    init(store: HealthStoreProviding = RealHealthStore()) {
+        self.store = store
+        super.init()
+    }
+
     func requestAuthorization(completion: @escaping (Bool) -> Void) {
-#if targetEnvironment(simulator)
-        completion(true)
-#else
         let typesToShare: Set = [HKObjectType.workoutType()]
         let typesToRead: Set<HKObjectType> = []
-        healthStore.requestAuthorization(toShare: typesToShare, read: typesToRead) { success, error in
+        store.requestAuthorization(toShare: typesToShare, read: typesToRead) { success, error in
             if let error = error {
                 print("Error requesting HealthKit authorization: \(error.localizedDescription)")
             }
             DispatchQueue.main.async { completion(success) }
         }
-#endif
     }
 
     func startWorkout(completion: @escaping (Bool) -> Void) {
@@ -65,8 +67,14 @@ class WorkoutSessionManager: NSObject, ObservableObject {
         configuration.activityType = .cycling
         configuration.locationType = .outdoor
 
+        guard let realStore = store as? RealHealthStore else {
+            print("beginSession requires RealHealthStore.")
+            DispatchQueue.main.async { completion(false) }
+            return
+        }
+
         do {
-            workoutSession = try HKWorkoutSession(healthStore: healthStore, configuration: configuration)
+            workoutSession = try HKWorkoutSession(healthStore: realStore.healthStore, configuration: configuration)
             workoutBuilder = workoutSession?.associatedWorkoutBuilder()
 
             workoutSession?.delegate = self
@@ -80,7 +88,6 @@ class WorkoutSessionManager: NSObject, ObservableObject {
                     DispatchQueue.main.async { completion(false) }
                     return
                 }
-
                 DispatchQueue.main.async { completion(true) }
             }
 
@@ -145,6 +152,18 @@ class WorkoutSessionManager: NSObject, ObservableObject {
         }
 #endif
     }
+
+    // MARK: - Internal session state handler (called from delegate; internal for testing)
+
+    func handleSessionStateChange(to state: HKWorkoutSessionState) {
+        if state == .ended {
+            if !intentionalEnd {
+                workoutStartDate = nil
+                onSessionExpired?()
+            }
+            intentionalEnd = false
+        }
+    }
 }
 
 extension WorkoutSessionManager: HKWorkoutSessionDelegate {
@@ -155,14 +174,9 @@ extension WorkoutSessionManager: HKWorkoutSessionDelegate {
             print("Workout session is running.")
         case .ended:
             print("Workout session ended.")
-            if !intentionalEnd {
-                print("Unexpected session end — notifying.")
-                DispatchQueue.main.async {
-                    self.workoutStartDate = nil
-                    self.onSessionExpired?()
-                }
+            DispatchQueue.main.async {
+                self.handleSessionStateChange(to: toState)
             }
-            intentionalEnd = false
         default:
             break
         }

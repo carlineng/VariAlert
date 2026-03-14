@@ -32,6 +32,29 @@ struct RadAlertApp: App {
     }
 }
 
+// MARK: - Routing
+
+enum RouteDestination: Equatable {
+    case onboarding
+    case bluetoothUnknown
+    case bluetoothDenied
+    case healthKitDenied
+    case idle
+    case workout
+}
+
+func routeDestination(hasCompletedOnboarding: Bool,
+                      bluetoothState: CBManagerState,
+                      isAuthorized: Bool,
+                      isHealthKitAuthorized: Bool,
+                      appMode: WatchAppState.Mode) -> RouteDestination {
+    guard hasCompletedOnboarding else { return .onboarding }
+    guard bluetoothState != .unknown else { return .bluetoothUnknown }
+    guard isAuthorized else { return .bluetoothDenied }
+    guard isHealthKitAuthorized else { return .healthKitDenied }
+    return appMode == .workout ? .workout : .idle
+}
+
 struct ContentView: View {
     @EnvironmentObject var appState: WatchAppState
     @EnvironmentObject var bluetoothManager: BluetoothManager
@@ -39,23 +62,22 @@ struct ContentView: View {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
 
     var body: some View {
+        let destination = routeDestination(
+            hasCompletedOnboarding: hasCompletedOnboarding,
+            bluetoothState: bluetoothManager.bluetoothState,
+            isAuthorized: bluetoothManager.isAuthorized,
+            isHealthKitAuthorized: workoutManager.isHealthKitAuthorized,
+            appMode: appState.mode
+        )
         NavigationView {
             VStack {
-                if !hasCompletedOnboarding {
-                    OnboardingView()
-                } else if bluetoothManager.bluetoothState == .unknown {
-                    ProgressView()
-                } else if !bluetoothManager.isAuthorized {
-                    BluetoothDeniedView()
-                } else if !workoutManager.isHealthKitAuthorized {
-                    HealthKitDeniedView()
-                } else {
-                    switch appState.mode {
-                    case .idle:
-                        IdleView()
-                    case .workout:
-                        WorkoutView()
-                    }
+                switch destination {
+                case .onboarding: OnboardingView()
+                case .bluetoothUnknown: ProgressView()
+                case .bluetoothDenied: BluetoothDeniedView()
+                case .healthKitDenied: HealthKitDeniedView()
+                case .idle: IdleView()
+                case .workout: WorkoutView()
                 }
             }
         }
