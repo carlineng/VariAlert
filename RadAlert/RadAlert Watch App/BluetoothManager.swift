@@ -441,7 +441,7 @@ extension BluetoothManager {
 // MARK: - Radar Data Parsing
 
 /// Represents a detected vehicle threat from the Garmin Varia radar.
-struct Threat {
+struct Threat: Equatable {
     let id: UInt8
     let distance: UInt8
     let speed: UInt8

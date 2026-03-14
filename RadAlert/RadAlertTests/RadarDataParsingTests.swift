@@ -134,7 +134,3 @@ final class RadarDataParsingTests: XCTestCase {
     }
 }
 
-// Equatable conformance for test assertions
-extension Array where Element == Threat {
-    static func == (lhs: [Threat], rhs: [Threat]) -> Bool { lhs.isEmpty && rhs.isEmpty }
-}

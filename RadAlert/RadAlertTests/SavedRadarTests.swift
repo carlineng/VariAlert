@@ -53,7 +53,8 @@ final class SavedRadarTests: XCTestCase {
         store.save(radar)
 
         let loaded = store.load()
-        XCTAssertEqual(loaded?.lastConnectedAt?.timeIntervalSince1970,
+        XCTAssertNotNil(loaded?.lastConnectedAt)
+        XCTAssertEqual(loaded!.lastConnectedAt!.timeIntervalSince1970,
                        date.timeIntervalSince1970,
                        accuracy: 0.001)
     }
