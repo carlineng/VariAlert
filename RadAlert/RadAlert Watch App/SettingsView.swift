@@ -10,6 +10,7 @@ struct SettingsView: View {
     @EnvironmentObject var bluetoothManager: BluetoothManager
     let onDismiss: () -> Void
 
+    @Environment(\.openURL) private var openURL
     @State private var showingRadarSelection = false
 
     var body: some View {
@@ -47,10 +48,12 @@ struct SettingsView: View {
                 }
                 .foregroundColor(.red)
 
-                Link("Privacy Policy",
-                     destination: URL(string: "https://carlineng.github.io/RadAlert/privacy.html")!)
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
+                Button("Privacy Policy") {
+                    openURL(URL(string: "https://carlineng.github.io/RadAlert/privacy.html")!)
+                }
+                .font(.caption2)
+                .foregroundColor(.secondary)
+                .buttonStyle(.plain)
 
                 Button("Done", action: onDismiss)
                     .foregroundColor(.secondary)
