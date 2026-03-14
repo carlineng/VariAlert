@@ -97,9 +97,13 @@ class BluetoothManager: NSObject, ObservableObject {
             // Auto-connect if this is the saved radar
             if isSaved1 || isSaved2 {
                 self.stopScanning()
-                self.isConnected = true
-                print("[Simulator] Saved radar found — auto-connected.")
-                self.startSimulatingThreats()
+                self.isConnecting = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    self.isConnecting = false
+                    self.isConnected = true
+                    print("[Simulator] Saved radar found — auto-connected.")
+                    self.startSimulatingThreats()
+                }
             } else {
                 // No saved radar → stop scanning so UI can show selection
                 self.scanTimedOut = true
@@ -290,6 +294,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
         // Auto-connect only to the saved radar; wait for others
         if isSaved {
             stopScanning()
+            isConnecting = true
             connectedPeripheral = peripheral
             centralManager?.connect(peripheral, options: nil)
         }
