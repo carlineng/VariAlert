@@ -192,8 +192,8 @@ struct WorkoutView: View {
             elapsedTimer = nil
             coordinator.teardown(bluetoothManager: bluetoothManager, workoutManager: workoutManager)
         }
-        .onChange(of: bluetoothManager.isConnected) { connected in
-            appState.isRadarConnected = connected
+        .onChange(of: bluetoothManager.isConnected) {
+            appState.isRadarConnected = bluetoothManager.isConnected
         }
     }
 
